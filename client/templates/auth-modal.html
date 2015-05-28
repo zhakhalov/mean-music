@@ -1,0 +1,120 @@
+<div class="modal-body">
+  <tabset>
+    <tab heading="Sign In">
+      <!-- ================================ SIGN IN TAB ================================ -->
+      <div ng-controller="SignInCtrl">
+        <form class="" name="signin">
+          <fieldset>
+            <div class="form-group">
+              <input name="login"
+                     type="text"
+                     class="form-control"
+                     placeholder="Login or E-mail"
+                     ng-model="login"
+                     required />
+              <ng-messages ng-show="signin.login.$dirty" for="signin.login.$error">
+                <ng-message class="label label-danger" when="required">Login required</ng-message>
+              </ng-messages>
+            </div>
+            <div class="form-group">
+              <input name="password"
+                     type="password"
+                     class="form-control"
+                     placeholder="Password"
+                     ng-model="password"
+                     required />
+              <ng-messages ng-show="signin.password.$dirty" for="signin.password.$error">
+                <ng-message class="label label-danger" when="required">Password required</ng-message>
+              </ng-messages>
+            </div>
+            <div class="form-group">
+              <input type="checkbox"
+                     placeholder="Password"
+                     ng-model="rememberMe" /> 
+              <label class="control-label">Remember me</label>
+            </div>
+            <div class="form-group">
+              <button class="btn btn-success"
+                      ng-click="signIn()"
+                      ng-disabled="signin.$invalid">
+                <i ng-show="pending" class="fa fa-spinner fa-pulse"></i>
+                Sign In
+              </button>
+              <label class="label label-danger"
+                     ng-show="!pending && loginErr">
+                Combination of username and password not found
+              </label>
+            </div>
+          </fieldset>
+        </form>
+      </div>
+    </tab>
+    <tab heading="Sign Up">
+      <!-- ================================ SIGN UP TAB ================================ -->
+      <div ng-controller="SignUpCtrl">
+        <form class="" name="signup">
+          <fieldset>
+            <div class="form-group">
+              <input name="username"
+                     type="text"
+                     class="form-control"
+                     placeholder="Username"
+                     ng-model="user.username"
+                     ng-model-options="{ debounce: 500 }"
+                     required ng-pattern="/^[a-zA-Z0-9]{1,99}$/" ng-minlength="3" unique-username />
+              <ng-messages ng-show="signup.username.$dirty" for="signup.username.$error">
+                <ng-message class="label label-danger" when="required">Username required</ng-message>
+                <ng-message class="label label-danger" when="pattern">Only latin letters and numbers</ng-message>
+                <ng-message class="label label-danger" when="minlength">Username is too short</ng-message>
+                <ng-message class="label label-danger" when="uniqueUsername">Username alredy used</ng-message>
+              </ng-messages>
+            </div>
+            <div class="form-group">
+              <input name="email"
+                     type="email"
+                     class="form-control"
+                     placeholder="E-mail"
+                     ng-model="user.email"
+                     ng-model-options="{ debounce: 500 }"
+                     required unique-email>
+              <ng-messages ng-show="signup.email.$dirty" for="signup.email.$error">
+                <ng-message class="label label-danger" when="required">Email required</ng-message>
+                <ng-message class="label label-danger" when="email">Email is not proper formatted</ng-message>
+                <ng-message class="label label-danger" when="uniqueEmail">Email alredy used</ng-message>
+              </ng-messages>
+            </div>
+            <div class="form-group">
+              <input name="password"
+                     type="password"
+                     class="form-control"
+                     placeholder="Password"
+                     ng-model="user.password" required ng-minlength="6" />
+              <ng-messages ng-show="signup.password.$dirty" for="signup.password.$error">
+                <ng-message class="label label-danger" when="required">Password required</ng-message>
+                <ng-message class="label label-danger" when="minlength">Password is too short</ng-message>
+              </ng-messages>
+            </div>
+            <div class="form-group">
+              <input name="confirm"
+                     type="password"
+                     class="form-control"
+                     ng-model="passwordConfirm"
+                     placeholder="Re-Enter Password" match="signup.password" />
+              <ng-messages ng-show="signup.confirm.$dirty" for="signup.confirm.$error">
+                <ng-message class="label label-danger" when="match">Password does not match confirmation</ng-message>
+              </ng-messages>
+            </div>
+            <div class="form-group">
+              <button class="btn btn-success"
+                      ng-click="signUp()"
+                      ng-disabled="signup.$invalid">
+                <i class="fa fa-spinner fa-pulse" ng-show="pending"></i>
+                Sign Up
+              </button>
+            </div>
+          </fieldset>
+        </form>
+      </div>
+    </tab>
+  </tabset>
+</div>

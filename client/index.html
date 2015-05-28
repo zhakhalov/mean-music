@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Boilerplate</title>
+    <!--========== bower_components STYLES ==========-->
+    <link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.css" type="text/css" />
+    <link rel="stylesheet" href="bower_components/font-awesome/css/font-awesome.css" type="text/css" />
+    <!--========== bower_components SCRIPTS ==========-->
+    <script type="text/javascript" src="bower_components/jquery/dist/jquery.js"></script>
+    <script type="text/javascript" src="bower_components/bootstrap/dist/js/bootstrap.js"></script>
+    <script type="text/javascript" src="bower_components/lodash/lodash.js"></script>
+    <script type="text/javascript" src="bower_components/angular/angular.js"></script>
+    <script type="text/javascript" src="bower_components/angular-resource/angular-resource.js"></script>
+    <script type="text/javascript" src="bower_components/angular-messages/angular-messages.js"></script>
+    <script type="text/javascript" src="bower_components/angular-bootstrap/ui-bootstrap.js"></script>
+    <script type="text/javascript" src="bower_components/angular-bootstrap/ui-bootstrap-tpls.js"></script>
+    <!--========== STYLES ==========-->
+    <link rel="stylesheet" href="css/style.css" type="text/css" />
+    <!--========== SCRIPTS ==========-->
+    <script type="text/javascript" src="js/app.js"></script>
+    <script type="text/javascript" src="js/constants.js"></script>
+
+    <script type="text/javascript" src="js/factories/lodash.js"></script>
+    <script type="text/javascript" src="js/factories/auth.js"></script>
+
+    <script type="text/javascript" src="js/services/users-svc.js"></script>
+    <script type="text/javascript" src="js/services/auth-svc.js"></script>
+
+    <script type="text/javascript" src="js/directives/unique-login-dir.js"></script>
+
+    <script type="text/javascript" src="js/controllers/auth-ctrl.js"></script>
+
+    <!--<script type="text/javascript" src="js/app.min.js"></script>-->
+  </head>
+  <body ng-app="app">
+    <div ng-controller="AuthCtrl">
+      <span class="btn btn-default" ng-show="pending" disabled><i class="fa fa-spinner fa-pulse"></i> </span>
+      <div ng-hide="pending">
+        <button class="btn btn-success" ng-hide="isAuthenticated" ng-click="showModal()">Sign In / Sign Up</button>
+        <button class="btn btn-default" ng-show="isAuthenticated" ng-click="signOut()">Sign Out</button>
+      </div>
+    </div>
+  </body>
+</html>
