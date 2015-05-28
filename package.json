@@ -2,8 +2,8 @@
   "name": "mean-music",
   "version": "1.0.0",
   "description": "Open source music web application.",
-  "main": "server.js",
-  "repository": "",
+  "main": "main.js",
+  "repository": "https://github.com/zhakhalov/mean-music.git",
   "author": "Viktor Zhakhalov <zhakhalov@gmail.com>",
   "dependencies": {
     "body-parser": "^1.12.4",
@@ -32,5 +32,8 @@
     "phantomjs": "^1.9.17",
     "protractor": "^2.1.0",
     "superagent": "^1.2.0"
+  },
+  "scripts": {
+    "start": "supervisor main.js"
   }
 }

@@ -1,6 +1,6 @@
 module.exports = {
   credentials: {
-    email: '',
-    password: ''
+    email: 'zhakhalov@gmail.com',
+    password: '123456'
   }
 };
