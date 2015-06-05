@@ -6,6 +6,7 @@ var cfg = global.__require('./config/db-cfg.js').songs;
 
 // ----- custom modules
 var security = global.__require('./modules/security');
+var storage = global.__require('./modules/storage');
 
 // ----- models
 var SongModel = global.__require('./models/song-model.js');
@@ -61,6 +62,15 @@ module.exports = function (router) {
         next(_.assign(new Error('No song found with id: ' + req.params.id), { status: 400 }));
       } else {
         res.send(req.params.id);
+      }
+    });
+  })
+  .get('/songs/:id/stream', function (req, res, next) {
+    SongModel.findById(req.params.id).lean().exec(function (err, doc) {
+      if (err) {
+        next(err);
+      } else if (!doc) {
+        res.send(doc);
       }
     });
   });

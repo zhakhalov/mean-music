@@ -6,10 +6,10 @@ angular.module('ui.bootstrap-slider', [])
             template: '<div><input class="slider-input" type="text" /></div>',
             require: 'ngModel',
             scope: {
-                sliderMax: "=",
-                sliderMin: "=",
-                sliderStep: "=",
-                sliderValue: "=",
+                max: "=",
+                min: "=",
+                step: "=",
+                value: "=",
                 ngModel: '=',
                 range: '=',
                 sliderid: '=',
@@ -43,23 +43,23 @@ angular.module('ui.bootstrap-slider', [])
                     }
 
                     setOption('id', $scope.sliderid);
-                    setOption('orientation', attrs['sliderOrientation'], 'horizontal');
-                    setOption('selection', attrs['sliderSelection'], 'before');
-                    setOption('handle', attrs['sliderHandle'], 'round');
-                    setOption('tooltip', attrs['sliderTooltip'], 'show');
-                    setOption('tooltipseparator', attrs['sliderTooltipseparator'], ':');
+                    setOption('orientation', attrs.orientation, 'horizontal');
+                    setOption('selection', attrs.selection, 'before');
+                    setOption('handle', attrs.handle, 'round');
+                    setOption('tooltip', attrs.sliderTooltip, 'show');
+                    setOption('tooltipseparator', attrs.tooltipseparator, ':');
 
-                    setFloatOption('min', $scope['sliderMin'], 0);
-                    setFloatOption('max', $scope['sliderMax'], 10);
-                    setFloatOption('step', $scope['sliderStep'], 1);
+                    setFloatOption('min', $scope.min, 0);
+                    setFloatOption('max', $scope.max, 10);
+                    setFloatOption('step', $scope.step, 1);
                     var strNbr = options.step + '';
                     var decimals = strNbr.substring(strNbr.lastIndexOf('.') + 1);
-                    setFloatOption('precision', attrs['sliderPrecision'], decimals);
+                    setFloatOption('precision', attrs.precision, decimals);
 
-                    setBooleanOption('tooltip_split', attrs['sliderTooltipsplit'], false);
-                    setBooleanOption('enabled', attrs['sliderEnabled'], true);
-                    setBooleanOption('naturalarrowkeys', attrs['sliderNaturalarrowkeys'], false);
-                    setBooleanOption('reversed', attrs['sliderReversed'], false);
+                    setBooleanOption('tooltip_split', attrs.tooltipsplit, false);
+                    setBooleanOption('enabled', attrs.enabled, true);
+                    setBooleanOption('naturalarrowkeys', attrs.naturalarrowkeys, false);
+                    setBooleanOption('reversed', attrs.reversed, false);
 
                     setBooleanOption('range', $scope.range, false);
                     if (options.range) {

@@ -22,6 +22,8 @@
     <!--========== SCRIPTS ==========-->
     <script type="text/javascript" src="js/app.js"></script>
     <script type="text/javascript" src="js/constants.js"></script>
+    
+    <script type="text/javascript" src="js/filters/time-filter.js"></script>
 
     <script type="text/javascript" src="js/factories/lodash.js"></script>
     <script type="text/javascript" src="js/factories/auth.js"></script>
@@ -91,16 +93,18 @@
     </main>
     <footer class="navbar navbar-inverse navbar-fixed-bottom" ng-controller="PlayerCtrl">
       <div class="container">
-        <div class="row">
-          <div class="col-md-8" style="padding: 0px">
+        <div class="row"> 
+          <div class="col-md-8" style="padding: 0px">{{volume}}
             <table class="table player-table">
               <tr class="active">
                 <td class="col-xs-1 text-center player-left-group">
-                  <button class="btn btn-default player-btn"> <i class="fa fa-play"> </i></button>
+                  <button class="btn btn-default player-btn" ng-click="togglePlaying()"> <i class="fa" ng-class="{ 'fa-play': audio.paused, 'fa-pause': !audio.paused }"> </i></button>
                 </td>
+                <td style="vertical-align: middle" class="small">{{audio.currentTime || 0 | time}}</td>
                 <td class="col-xs-9">
-                  <slider ng-model="time" slider-min="0" slider-max="1000" formatter="timeFormatter"></slider>  
+                  <slider ng-model="time" min="0" max="1000" slider-tooltip="hide" on-start-slide="startSeeking()" on-stop-slide="stopSeeking()"></slider>  
                 </td>
+                <td style="vertical-align: middle" class="small">{{audio.duration || 0 | time}}</td>
                 <td class="col-xs-1 text-left player-right-group">
                   <button class="btn btn-default player-btn"><i class="fa fa-fast-backward"></i></button>
                   <button class="btn btn-default player-btn"><i class="fa fa-fast-forward"></i></button>
