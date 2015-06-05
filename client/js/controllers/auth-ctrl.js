@@ -13,7 +13,7 @@
       });
       // ------------------ buttons
       $scope.showModal = function () {
-        self.modal = $modal.open({ templateUrl: 'templates/auth-modal.html', size: 'sm' });
+        self.modal = $modal.open({ templateUrl: 'templates/modals/auth-modal.html', size: 'sm' });
       };
       $scope.signOut = function () {
         AuthSvc.signOut();

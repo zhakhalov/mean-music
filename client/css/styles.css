@@ -1,0 +1,23 @@
+.player-btn {
+  min-width: 38px
+}
+
+.player-table {
+  margin-bottom: 0px;
+}
+
+.player-left-group {
+  min-width: 50px;
+}
+
+.player-right-group {
+  min-width: 150px;
+}
+
+.player-volume .slider-selection {
+	background: #fff;
+}
+
+.player-volume .slider-track-high {
+	background: #E01D18;
+}

@@ -1,7 +1,8 @@
 module.exports = {
   connectionString: (function () {
     if(process.env.OPENSHIFT_MONGODB_DB_PASSWORD){                                  // RELEASE
-      return process.env.OPENSHIFT_MONGODB_DB_USERNAME + ":" +
+      return 'mongodb://' + 
+      process.env.OPENSHIFT_MONGODB_DB_USERNAME + ":" +
       process.env.OPENSHIFT_MONGODB_DB_PASSWORD + "@" +
       process.env.OPENSHIFT_MONGODB_DB_HOST + ':' +
       process.env.OPENSHIFT_MONGODB_DB_PORT + '/' +
@@ -13,19 +14,43 @@ module.exports = {
     }
   })(),
   users: {
-    public: 'name avatar',
+    defaultQuery: {
+      query: {},
+      skip: 0, 
+      limit: 10,
+      sort: 'rating',
+      select: '_id name avatar'
+    },
     preventUpdate: ['_id', 'email', 'password', 'roles']
   },
   artists: {
-    preventUpdate: ['_id'],
-    pagination: {skip: 0, limit: 10}
+    preventUpdate: ['_id', 'albums', 'songs'],
+    defaultQuery: {
+      query: {},
+      skip: 0, 
+      limit: 10,
+      sort: '-rating',
+      select: '_id name img'
+    }
   },
   albums: {
-    preventUpdate: ['_id'],
-    pagination: {skip: 0, limit: 10}
+   preventUpdate: ['_id', 'songs'],
+    defaultQuery: {
+      query: {},
+      skip: 0, 
+      limit: 10,
+      sort: '-rating',
+      select: '_id name img'
+    }
   },
   songs: {
     preventUpdate: ['_id'],
-    pagination: {skip: 0, limit: 10}
+    defaultQuery: {
+      query: {},
+      skip: 0, 
+      limit: 10,
+      sort: '-rating',
+      select: '_id name img'
+    }
   }
 };

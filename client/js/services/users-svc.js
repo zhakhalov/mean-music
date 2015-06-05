@@ -6,8 +6,8 @@
       var _userId;
       var self = this;
       /**
-       * Gets user by [_id].
-       * @param id{String} User _id.
+       * Gets user by _id.
+       * @param id {String} User _id.
        * @return {Promise}
        */
       self.getUser = function (id) {
@@ -41,8 +41,8 @@
               get: { method: 'GET', headers: { Authorization: AuthSvc.header } },
               update: { method: 'PUT', headers: { Authorization: AuthSvc.header } },
             });
-            User.get()
-            .$promise.then(function (user) {
+            User.get().$promise
+            .then(function (user) {
               _users[_userId] = user;
               resolve(user);
             }, function (err) {
@@ -53,7 +53,7 @@
       };
       /**
        * Validates unique email async.
-       * @param login {String} User's username or email.
+       * @param {String} login User's email.
        * @return {Promise}
        */
       self.checkLogin = function (login) {
@@ -69,7 +69,7 @@
       };
       /**
        * Gets/Sets current user.
-       * @param user current user.
+       * @param {Object} user current user.
        * @return {Object} Current user.
        */
       self.user = function (user) {

@@ -12,7 +12,7 @@ var UserModel = global.__require('./models/user-model');
 
 /**
  * Sign In user.
- * @param credentials {login: {String}, password: {String}} Login credentials.
+ * @param {login: {String}, password: {String}} credentials Login credentials.
  */
 function signIn (credentials, fn) {
   UserModel.findOne({ $or: [{ username: credentials.login }, { email: credentials.login }] }, function (err, user) {
@@ -42,7 +42,7 @@ function signIn (credentials, fn) {
 
 /**
  * Sign Up user.
- * @param user {UserModel} User to sin up.
+ * @param {UserModel} user User to sin up.
  * @return {String} Authorization token.
  */
 function signUp (user, fn) {
@@ -77,7 +77,7 @@ function signUp (user, fn) {
 
 /**
  * Generate token authorization token from payload.
- * @param payload {UserModel} Token payload.
+ * @param {UserModel} payload Token payload.
  * @return {String} Authorization token.
  */
 function token (payload) {
@@ -86,8 +86,9 @@ function token (payload) {
 
 /**
  * Verify user in roles.
- * @param user {Object} User.
- * @params roles {String|[String]} Allowed roles.
+ * @param {Object} user User.
+ * @param {String|[String]} roles Allowed roles.
+ * @return {Function} Express middleware.
  */
 function isInRoles(user, roles) {
   roles = _.isArray(roles) ? roles : Array.prototype.slice.call(arguments, 1);
@@ -96,7 +97,8 @@ function isInRoles(user, roles) {
 
 /**
  * User role-based autorization filter middleware.
- * @params roles {String|[String]} Allowed roles.
+ * @param {String|[String]} roles  Allowed roles.
+ * @return {Function} Express middleware.
  */
 function ensureInRole (roles) {
   return function (req, res, next) {

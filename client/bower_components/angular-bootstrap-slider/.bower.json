@@ -1,0 +1,38 @@
+{
+  "name": "angular-bootstrap-slider",
+  "version": "0.1.2",
+  "authors": [
+    "Kyle Kemp <kyle@seiyria.com>"
+  ],
+  "description": "An angular directive for seiyria-bootstrap-slider",
+  "main": "slider.js",
+  "keywords": [
+    "angular",
+    "slider",
+    "bootstrap-slider",
+    "bootstrap"
+  ],
+  "license": "MIT",
+  "homepage": "http://seiyria.github.io/bootstrap-slider/",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "seiyria-bootstrap-slider": "~v4.8",
+    "angular": "~1.3.15"
+  },
+  "_release": "0.1.2",
+  "_resolution": {
+    "type": "version",
+    "tag": "0.1.2",
+    "commit": "b7bc8ef0867887719efd1ab3b383284217731af7"
+  },
+  "_source": "git://github.com/seiyria/angular-bootstrap-slider.git",
+  "_target": "~0.1.2",
+  "_originalSource": "angular-bootstrap-slider",
+  "_direct": true
+}
