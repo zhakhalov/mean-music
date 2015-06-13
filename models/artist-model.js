@@ -6,8 +6,6 @@ var ArtistSchema = mongoose.Schema({
   name: { type: String, required: true, unique: true },                           //  Name of the artist.
   img: { type: String },                                                          //  URL of an image on artist's page.
   desc: { type: String },                                                         //  About artist.
-  albums: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Album' }],               //  Albums.
-  songs: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Song' }],                 //  Songs.
   genres: [{type: String, lowercase: true, trim: true }],                         //  Genres.
   tags: [{type: String, trim: true }],                                            //  Tags.
   raters: [VoteSchema],                                                           //  Raters.

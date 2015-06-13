@@ -58,8 +58,8 @@
               <input name="username"
                      type="text"
                      class="form-control"
-                     placeholder="Username"
-                     ng-model="user.username"
+                     placeholder="Name"
+                     ng-model="user.name"
                      ng-model-options="{ debounce: 500 }"
                      required ng-pattern="/^[a-zA-Z0-9]{1,99}$/" ng-minlength="3" unique-username />
               <ng-messages ng-show="signup.username.$dirty" for="signup.username.$error">

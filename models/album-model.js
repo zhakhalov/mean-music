@@ -7,7 +7,7 @@ var AlbumSchema = mongoose.Schema({
   year: { type: String },                                                         //  Release year.
   img: { type: String },                                                          //  URL of album thumb image.
   desc: { type: String },                                                         //  About album.
-  songs: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Song' }],                 //  Songs.
+  artists: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Artist' }],             //  Artists.
   genres: [{type: String, lowercase: true, trim: true }],                         //  Genres.
   tags: [{type: String, trim: true }],                                            //  Tags.
   raters: [VoteSchema],                                                           //  Raters.

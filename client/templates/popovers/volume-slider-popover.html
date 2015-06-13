@@ -1,3 +1,11 @@
 <div class="text-center" ng-controller="VolumeCtrl">
-    <slider class="player-volume" ng-model="volume" on-slide="volumeAdjust()" min="0" max="100" orientation="vertical" reversed="true" slider-tooltip="hide"></slider>
+    <slider class="player-volume"
+            ng-model="volume" 
+            on-slide="volumeAdjust()" 
+            min="0" 
+            max="100" 
+            orientation="vertical" 
+            reversed="true" 
+            slider-tooltip="hide">
+    </slider>
 </div>

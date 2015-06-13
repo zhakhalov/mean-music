@@ -1,17 +1,29 @@
 .player-btn {
-  min-width: 38px
+  min-width: 38px;
+  border-radius: 50%;
+  background: transparent;
+  color: #aaa;
+  border: none;
+}
+.player-btn:hover {
+  color: #fff;
+}
+.player-btn:focus {
+  outline:0;
 }
 
 .player-table {
   margin-bottom: 0px;
+  vertical-align: middle;
 }
 
-.player-left-group {
-  min-width: 50px;
+.player-short-group {
+  width: 100px;
+  min-width: 100px;
 }
 
-.player-right-group {
-  min-width: 150px;
+.player-long-group {
+  min-width: 160px;
 }
 
 .player-volume .slider-selection {
@@ -20,4 +32,13 @@
 
 .player-volume .slider-track-high {
 	background: #E01D18;
+}
+
+.player-col {
+  padding: 0px;
+}
+
+.player-cell {
+  vertical-align: middle !important;
+  background-color: transparent;
 }

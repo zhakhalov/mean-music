@@ -1,6 +1,6 @@
 # MEAN Music
 
-Hosted in cloud, <u>__real cloud__</u>, but still empty http://meanmusic-zhakhalov.rhcloud.com/
+Hosted in cloud, __real cloud__, but still empty http://meanmusic-zhakhalov.rhcloud.com/
 
 
 ###Project Idea
@@ -23,7 +23,7 @@ Requirements:
 * Offline work with cached files up to few hundreds MB.
 
 ###Analog products
-In the web a lot of similar platforms. Here are the most popular:
+Trere are a lot of similar platforms in the web. Here are the most popular:
 ####Pandora http://www.pandora.com
 Internat radiostainsion. Everyone can listen or create own stainsion
 
@@ -69,7 +69,7 @@ Out of concurrence.
 Pros:
 
 * Richest collection of conetent in the world.
-* Has _My Mix_ feature, similar to Soundcloud::Stream, but only with lisened tracks
+* Has _My Mix_ feature, similar to Soundcloud::Stream, but only with lisеened tracks.
 
 Cons:
 

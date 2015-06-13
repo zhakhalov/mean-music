@@ -15,7 +15,7 @@ var UserModel = global.__require('./models/user-model');
  * @param {login: {String}, password: {String}} credentials Login credentials.
  */
 function signIn (credentials, fn) {
-  UserModel.findOne({ $or: [{ username: credentials.login }, { email: credentials.login }] }, function (err, user) {
+  UserModel.findOne({ $or: [{ name: credentials.login }, { email: credentials.login }] }, function (err, user) {
     if (err) {
       fn(err);
     } else if (!user) {
@@ -31,7 +31,7 @@ function signIn (credentials, fn) {
         user: user.toObject(), 
         token: token({
           id: user.id || user._id,
-          username: user.username,
+          name: user.name,
           email: user.email,
           roles: user.roles
         })
@@ -64,7 +64,7 @@ function signUp (user, fn) {
             user: user.toObject(), 
             token: module.exports.token({
               id: user.id || user._id,
-              username: user.username,
+              name: user.name,
               email: user.email,
               roles: user.roles
             })

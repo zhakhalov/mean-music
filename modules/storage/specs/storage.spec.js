@@ -1,23 +1,37 @@
 var describe = require('mocha').describe;
 var it = require('mocha').it;
-var assert = require('assert');
+var before = require('mocha').before;
+var after = require('mocha').after;
+var superagent = require('superagent');
+var expect = require('chai').expect;
+
+global.__require = function (path) {
+  return require(require('path').join(__dirname, '../../..', path));
+};
+
 
 var storage = require('..');
 
 describe('Storage', function () {
-  it('sould connect to MEGA', function (done) {
-    storage({email: 'zhakhalov@gmail.com', password: '123456' }, function (err) {
-      assert.equal(err, null);
+  it('should get stream to file', function (done) {
+    storage.get('./audio/apex-rise_-_cherry-blossom-trees.mp3', function (err, buffer) {
+      expect(err).to.equal(null);
       done();
-    });  
+    });
   });
-  it('sould check filename', function () {
-    console.log(storage.storage.files);
-    assert.equal(storage.storage.files['4tVUxLaC'].name, 'cryptex_-_ambient_sounds.mp3');
+  it('should get media link to file', function (done) {
+    storage.media('./audio/apex-rise_-_cherry-blossom-trees.mp3', function (err, url) {
+      console.log(url);
+      expect(err).to.equal(null);
+      expect(url).not.equal(null);
+      done();
+    });
   });
-  it('should download', function(done) {
-    storage.storage.files['4tVUxLaC'].download(function (err, data) {
-      assert.equal(err, null);
+  it('should get url to file', function (done) {
+    storage.media('./img/avatar.jpg', function (err, url) {
+      console.log(url);
+      expect(err).to.equal(null);
+      expect(url).not.equal(null);
       done();
     });
   });

@@ -23,7 +23,15 @@ module.exports = function (router) {
     });
   })
   .get('/albums', function (req, res, next) {
-    AlbumModel.find(req.query).lean().exec(function (err, docs) {
+    var query = _.defaults(req.query, cfg.defaultQuery);
+    
+    AlbumModel.find(query.query)
+    .sort(query.sort)
+    .skip(query.skip)
+    .limit(query.limit)
+    .select(query.select)
+    .lean()
+    .exec(function (err, docs) {
       if (err) {
         next(err);
       } else {
@@ -32,36 +40,91 @@ module.exports = function (router) {
     });
   })
   .post('/albums', security.ensureAuthenticated, function (req, res, next) {
-    var model = new AlbumModel(req.body);
+    var model = new AlbumModel(_.assign(req.body, {
+      createdBy: { name: req.user.name, userId: req.user.id },
+      updatedBy: { name: req.user.name, userId: req.user.id }
+    }));
     model.save(function (err, doc) {
       if (err) {
         next(err);
       } else {
-        res.send(doc);
+        res.send(doc.toObject());
       }
     });
   })
-  .get('/albums/:id', function (req, res, next) {
-    AlbumModel.findById(req.params.id).lean().exec(function (err, doc) {
+  .get('/albums/:albumId', function (req, res, next) {
+    AlbumModel.findById(req.params.albumId).lean().exec(function (err, doc) {
       if (err) {
         next(err);
       } else if (!doc) {
-        res.send(doc);
+        next(_.assign(new Error('No album found with Id: ' + req.params.albumId), { status: 404 }));
+      } else {
+        res.send(doc.toObject());
       }
     });
   })
-  .put('/albums/:id', security.ensureAuthenticated, function (req, res, next) {
-    req.body = _.omit(req.body, cfg.preventUpdate);
-    req.body.updateAt = new Date();
-    
-    AlbumModel.update({ _id: req.param.id }, req.body, function (err, numAffected) {
+  .put('/albums/:albumId', security.ensureAuthenticated, function (req, res, next) {
+    req.body.updatedAt = new Date();
+    req.body.updatedBy = { name: req.user.name, userId: req.user.id };
+    AlbumModel.findById(req.params.albumId, function(err, album) {
       if (err) {
         next(err);
-      } else if (!numAffected) {
-        next(_.assign(new Error('No album found with id: ' + req.param.id), { status: 400 }));
+      } else if (!album) {
+        album = new AlbumModel(req.body);
+        album.save(function (err) {
+          if (err) {
+            next(err);
+          } else {
+            res.status(201).send(album.toObject());
+          }
+        });
       } else {
-        res.send('ok');
+        album = _.assign(album, _.omit(req.body, cfg.preventUpdate));
+        album.save(function (err) {
+          if (err) {
+            next(err);
+          } else {
+            res.send(album.toObject());
+          }
+        });
       }
     });
-  });
+  })
+  .delete('/albums/:albumId', security.ensureAuthenticated, security.ensureInRole('admin', 'owner'), function (req, res, next) {
+    AlbumModel.remove({ _id: req.params.albumId }, function (err) {
+      if (err) {
+        next(err);
+      } else {
+        res.send('album succesfully removed.');
+      }
+    });
+  })
+  .post('/albums/:albumId/rate', security.ensureAuthenticated, function (req, res, next) {
+    var rate = parseFloat(req.query.rate);
+    if (isNaN(rate)) {
+      next(_.assign(new Error('querystring.rate must be a number'), { status: 403 }));
+    } else {
+      AlbumModel.findById(req.params.albumId)
+      .exec(function (err, album) {
+        if (err) {
+          next(err);
+        } else if (!album) {
+          next(_.assign(new Error('No album found with albumId: ' + req.params.albumId), { status: 404 }));
+        } else {
+          album.raters.push({
+            userId: req.user.id,
+            rate: rate 
+          });
+          album.rating = _.sum(album.raters.map(function (entry) { return entry.rate })) / album.raters.length;
+          album.save(function (err) {
+            if (err) {
+              next(err);
+            } else {
+              res.send({ rating: album.rating });
+            }
+          });
+        }
+      });
+    }
+  })
 };

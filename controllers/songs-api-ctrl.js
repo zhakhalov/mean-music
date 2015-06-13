@@ -24,7 +24,15 @@ module.exports = function (router) {
     });
   })
   .get('/songs', function (req, res, next) {
-    SongModel.find(req.query).lean().exec(function (err, docs) {
+    var query = _.defaults(req.query, cfg.defaultQuery);
+    
+    SongModel.find(query.query)
+    .sort(query.sort)
+    .skip(query.skip)
+    .limit(query.limit)
+    .select(query.select)
+    .lean()
+    .exec(function (err, docs) {
       if (err) {
         next(err);
       } else {
@@ -33,45 +41,108 @@ module.exports = function (router) {
     });
   })
   .post('/songs', security.ensureAuthenticated, function (req, res, next) {
-    var model = new SongModel(req.body);
+    var model = new SongModel(_.assign(req.body, {
+      createdBy: { name: req.user.name, userId: req.user.id },
+      updatedBy: { name: req.user.name, userId: req.user.id }
+    }));
     model.save(function (err, doc) {
       if (err) {
         next(err);
       } else {
-        res.send(doc);
+        res.send(doc.toObject());
       }
     });
   })
-  .get('/songs/:id', function (req, res, next) {
-    SongModel.findById(req.params.id).lean().exec(function (err, doc) {
+  .get('/songs/:songsId', function (req, res, next) {
+    SongModel.findById(req.params.songsId).lean().exec(function (err, doc) {
       if (err) {
         next(err);
       } else if (!doc) {
-        res.send(doc);
-      }
-    });
-  })
-  .put('/songs/:id', security.ensureAuthenticated, function (req, res, next) {
-    req.body = _.omit(req.body, cfg.preventUpdate);
-    req.body.updateAt = new Date();
-    
-    SongModel.update({ _id: req.params.id }, req.body, function (err, numAffected) {
-      if (err) {
-        next(err);
-      } else if (!numAffected) {
-        next(_.assign(new Error('No song found with id: ' + req.params.id), { status: 400 }));
+        next(_.assign(new Error('No song found with Id: ' + req.params.songsId), { status: 404 }));
       } else {
-        res.send(req.params.id);
+        res.send(doc.toObject());
       }
     });
   })
-  .get('/songs/:id/stream', function (req, res, next) {
-    SongModel.findById(req.params.id).lean().exec(function (err, doc) {
+  .put('/songs/:songsId', security.ensureAuthenticated, function (req, res, next) {
+    req.body.updatedAt = new Date();
+    req.body.updatedBy = { name: req.user.name, userId: req.user.id };
+    SongModel.findById(req.params.songsId, function(err, song) {
+      if (err) {
+        next(err);
+      } else if (!song) {
+        song = new SongModel(req.body);
+        song.save(function (err) {
+          if (err) {
+            next(err);
+          } else {
+            res.status(201).send(song.toObject());
+          }
+        });
+      } else {
+        song = _.assign(song, _.omit(req.body, cfg.preventUpdate));
+        song.save(function (err) {
+          if (err) {
+            next(err);
+          } else {
+            res.send(song.toObject());
+          }
+        });
+      }
+    });
+  })
+  .delete('/songs/:songsId', security.ensureAuthenticated, security.ensureInRole('admin', 'owner'), function (req, res, next) {
+    SongModel.remove({ _id: req.params.songsId }, function (err) {
+      if (err) {
+        next(err);
+      } else {
+        res.send('Song succesfully removed.');
+      }
+    });
+  })
+  .get('/songs/:songId/media', function (req, res, next) {
+    SongModel.findById(req.params.songId).lean().exec(function (err, doc) {
       if (err) {
         next(err);
       } else if (!doc) {
-        res.send(doc);
+        next(_.assign(new Error('No song found with Id: ' + req.params.songsId), { status: 404 }));
+      } else {
+        storage.media(doc.path, function (err, url, expireAt) {
+          if (err) {
+            next (err);
+          } else {
+            res.send({ url: url, expireAt: expireAt });
+          }
+        });
       }
     });
-  });
+  })
+  .post('/songs/:songId/rate', security.ensureAuthenticated, function (req, res, next) {
+    var rate = parseFloat(req.query.rate);
+    if (isNaN(rate)) {
+      next(_.assign(new Error('querystring.rate must be a number'), { status: 403 }));
+    } else {
+      SongModel.findById(req.params.songId)
+      .exec(function (err, song) {
+        if (err) {
+          next(err);
+        } else if (!song) {
+          next(_.assign(new Error('No song found with songId: ' + req.params.songId), { status: 404 }));
+        } else {
+          song.raters.push({
+            userId: req.user.id,
+            rate: rate 
+          });
+          song.rating = _.sum(song.raters.map(function (entry) { return entry.rate })) / song.raters.length;
+          song.save(function (err) {
+            if (err) {
+              next(err);
+            } else {
+              res.send({ rating: song.rating });
+            }
+          });
+        }
+      });
+    }
+  })
 };

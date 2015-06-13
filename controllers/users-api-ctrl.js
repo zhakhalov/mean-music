@@ -32,6 +32,38 @@ module.exports = function (router) {
        }
     });
   })
+  .get('/users/me', security.ensureAuthenticated, function (req, res, next) {
+    UserModel.findById(req.user.userId).lean().exec(function (err, doc) {
+      if (err) {
+         next(err);
+       } else if (!doc){
+         next(_.assign(new Error('No user found with userId: ' + req.user.id), { status: 404 }));
+       } else {
+         res.send(doc);
+       }
+    });
+  })
+  .put('/users/me', security.ensureAuthenticated, function (req, res, next) {
+    req.body = _.omit(req.body, cfg.preventUpdate);
+    req.body.updateAt = new Date();
+    UserModel.findById(req.user.id)
+    .exec(function (err, doc) {
+      if (err) {
+        next(err);
+      } else if (!doc) {
+        next(_.assign(new Error('No user found with userId: ' + req.user.id), { status: 404 }));
+      } else {
+        doc = _.assign(req.body);
+        doc.save(function (err) {
+          if (err) {
+            next(err);
+          } else {
+            res.send(doc.toObject());
+          }
+        });
+      }
+    });
+  })
   .get('/users/exists', function (req, res, next) {
      UserModel.findOne({ email: req.query.login }, function (err, doc) {
        if (err) {
@@ -41,46 +73,61 @@ module.exports = function (router) {
        }
      });
   })
-  .get('/users/:id', function (req, res, next) {
-    UserModel.findById(req.params.id, cfg.public).lean().exec(function (err, doc) {
+  .get('/users/:userId', function (req, res, next) {
+    UserModel.findById(req.params.userId, '_id name avatar')
+    .lean()
+    .exec(function (err, doc) {
       if (err) {
          next(err);
       } else if (!doc) {
-        next(_.assign(new Error('User not found'), { status: 404 }));
+        next(_.assign(new Error('No user found with userId: ' + req.params.userId), { status: 404 }));
       } else {
        res.send(doc);
       }
     });
   })
-  .delete('/users/:id', security.ensureAuthenticated, security.ensureInRole('admin'), function (req, res, next) {
-    UserModel.findById(req.params.id).lean().exec(function (err, doc) {
+  .delete('/users/:userId', security.ensureAuthenticated, security.ensureInRole('admin'), function (req, res, next) {
+    UserModel.delete({ id: req.params.userId }, function (err) {
       if (err) {
          next(err);
        } else {
-         res.send('ok');
+         res.send('User succesfully removed. Id: ' + req.params.userId);
        }
     });
   })
-  .get('/users/me', security.ensureAuthenticated, function (req, res, next) {
-    UserModel.findById(req.user.id).lean().exec(function (err, doc) {
-      if (err) {
-         next(err);
-       } else if (!doc){
-         next(_.assign(new Error('User not found'), { status: 404 }));
-       } else {
-         res.send(doc);
-       }
-    });
-  })
-  .put('/users/me', security.ensureAuthenticated, function (req, res, next) {
-    req.body = _.omit(req.body, cfg.preventUpdate);
-    req.body.updateAt = new Date();
-    
-    UserModel.update({ id: req.user.id }, req.body, { upsert: true }, function (err) {
+  .post('/users/:userId/roles', security.ensureAuthenticated, security.ensureInRole('admin'), function (req, res, next) {
+    UserModel.findById(req.params.userId, function (err, doc) {
       if (err) {
         next(err);
+      } else if (!doc) {
+        next(_.assign(new Error('No user found with userId: ' + req.params.userId), { status: 404 }));
       } else {
-        res.send('ok');
+        doc.roles.push(req.body);
+        doc.save(function (err) {
+          if (err) {
+            next(err);
+          } else {
+            res.send(doc.toObject().roles);
+          }
+        });
+      }
+    });
+  })
+  .delete('/users/:userId/roles', security.ensureAuthenticated, security.ensureInRole('admin'), function (req, res, next) {
+     UserModel.findById(req.params.userId, function (err, doc) {
+      if (err) {
+        next(err);
+      } else if (!doc) {
+        next(_.assign(new Error('No user found with userId: ' + req.params.userId), { status: 404 }));
+      } else {
+        doc.roles.pull(req.body);
+        doc.save(function (err) {
+          if (err) {
+            next(err);
+          } else {
+            res.send(doc.toObject().roles);
+          }
+        });
       }
     });
   })

@@ -43,13 +43,13 @@
     function ($scope, $rootScope, AuthSvc) {
       $scope.loginErr = false;
       $scope.pending = false;
-      $scope.user = { username: '', email:'', password: ''};
+      $scope.user = { name: '', email:'', password: ''};
       // ------------------ buttons
       $scope.signUp = function () {
         $scope.pending = true;
         AuthSvc.signUp($scope.user)
         .then(function () {
-          $scope.user = { username: '', email: '', password: '' };
+          $scope.user = { name: '', email: '', password: '' };
           $scope.pending = false;
           $rootScope.$emit('authenticated');
           $scope.signup.$setPristine();

@@ -91,32 +91,43 @@
         </div>
       </nav>
     </main>
-    <footer class="navbar navbar-inverse navbar-fixed-bottom" ng-controller="PlayerCtrl">
-      <div class="container">
-        <div class="row"> 
-          <div class="col-md-8" style="padding: 0px">{{volume}}
-            <table class="table player-table">
-              <tr class="active">
-                <td class="col-xs-1 text-center player-left-group">
-                  <button class="btn btn-default player-btn" ng-click="togglePlaying()"> <i class="fa" ng-class="{ 'fa-play': audio.paused, 'fa-pause': !audio.paused }"> </i></button>
-                </td>
-                <td style="vertical-align: middle" class="small">{{audio.currentTime || 0 | time}}</td>
-                <td class="col-xs-9">
-                  <slider ng-model="time" min="0" max="1000" slider-tooltip="hide" on-start-slide="startSeeking()" on-stop-slide="stopSeeking()"></slider>  
-                </td>
-                <td style="vertical-align: middle" class="small">{{audio.duration || 0 | time}}</td>
-                <td class="col-xs-1 text-left player-right-group">
-                  <button class="btn btn-default player-btn"><i class="fa fa-fast-backward"></i></button>
-                  <button class="btn btn-default player-btn"><i class="fa fa-fast-forward"></i></button>
-                  <button class="btn btn-default player-btn" popover-placement="top" popover-template="'templates/popovers/volume-slider-popover.html'"><i class="fa fa-volume-up"></i></button>
-                </td>
-              </tr>
-            </table>
-          </div>
-          <div class="col-md-4" style="padding: 0px">
-            
-          </div>
-        </div>
+    <footer class="navbar navbar-inverse navbar-fixed-bottom" 
+            ng-controller="PlayerCtrl">
+      <div class="container-fluid">
+        <table class="table player-table">
+          <tr class="active">
+            <td class="col-xs-1 text-center player-long-group player-cell">
+              <button class="btn btn-default player-btn"><i class="fa fa-fast-backward"></i></button>
+              <button class="btn btn btn-default player-btn btn-lg" 
+                      ng-click="togglePlaying()">
+                <i  class="fa" 
+                    ng-class="{ 'fa-play fa-lg': audio.paused, 'fa-pause fa-lg': !audio.paused }"></i>
+                </button>
+                <button class="btn btn-default player-btn"><i class="fa fa-fast-forward"></i></button>
+            </td>
+            <td class="small player-cell">{{audio.currentTime || 0 | time}}</td>
+            <td class="col-xs-9 player-cell">
+              <slider ng-model="time"
+                      min="0"
+                      max="1000" 
+                      slider-tooltip="hide" 
+                      on-start-slide="startSeeking()" 
+                      on-stop-slide="stopSeeking()">
+              </slider>  
+            </td>
+            <td class="small player-cell">{{audio.duration || 0 | time}}</td>
+            <td class="player-cell"><i class="fa fa-volume-up"></i></td>
+            <td class="col-xs-2 player-cell player-short-group">
+              <slider ng-model="volume"
+                      min="0"
+                      max="100" 
+                      slider-tooltip="hide" 
+                      on-start-slide="startSeeking()" 
+                      on-stop-slide="stopSeeking()">
+              </slider>
+            </td>
+          </tr>
+        </table>
       </div>
     </footer>
   </body>

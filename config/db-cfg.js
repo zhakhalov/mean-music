@@ -19,9 +19,8 @@ module.exports = {
       skip: 0, 
       limit: 10,
       sort: 'rating',
-      select: '_id name avatar'
     },
-    preventUpdate: ['_id', 'email', 'password', 'roles']
+    preventUpdate: ['_id', 'email', 'password', 'roles'],
   },
   artists: {
     preventUpdate: ['_id', 'albums', 'songs'],

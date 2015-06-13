@@ -64,6 +64,16 @@ app.use(favicon(path.join(__dirname, 'assets/mean-music-logo.ico')));
 
 var server = http.createServer(app);
 
+apiRouter.get('/media', function (req, res, next) {
+  storage.media(req.query.filename, function (err, url) {
+    if (err) {
+      next(err);
+    } else {
+      res.send(url);
+    }
+  })
+});
+
 // -----  controllers
 
 AuthApiCtrl(apiRouter);
@@ -90,11 +100,11 @@ module.exports = function (port, ip) {
   });
   
   // ----- storage
-  storage(storageCfg.credentials, function (err) {
+  storage.account(function (err, account) {
     if (err) {
-      logger.error({ category: 'storage', message: 'login error', err: err });
+      logger.error({ category:'storage', message: 'could not get account', err: err });
     } else {
-      logger.info({ category: 'storage', message: 'connected' });
+      logger.info({ category:'storage', message: 'connected', account: account.email });
     }
   });
   
