@@ -23,33 +23,33 @@ module.exports = {
     preventUpdate: ['_id', 'email', 'password', 'roles'],
   },
   artists: {
-    preventUpdate: ['_id', 'albums', 'songs'],
-    defaultQuery: {
-      query: {},
-      skip: 0, 
-      limit: 10,
-      sort: '-rating',
-      select: '_id name img'
-    }
-  },
-  albums: {
-   preventUpdate: ['_id', 'songs'],
-    defaultQuery: {
-      query: {},
-      skip: 0, 
-      limit: 10,
-      sort: '-rating',
-      select: '_id name img'
-    }
-  },
-  songs: {
     preventUpdate: ['_id'],
     defaultQuery: {
       query: {},
       skip: 0, 
       limit: 10,
       sort: '-rating',
-      select: '_id name img'
+      select: '_id name img rating'
+    }
+  },
+  albums: {
+   preventUpdate: ['_id'],
+    defaultQuery: {
+      query: {},
+      skip: 0, 
+      limit: 10,
+      sort: '-rating',
+      select: '_id name img rating artists release'
+    }
+  },
+  songs: {
+    preventUpdate: ['_id', 'path'],
+    defaultQuery: {
+      query: {},
+      skip: 0, 
+      limit: 10,
+      sort: '-rating',
+      select: '_id name img rating albums artists duration'
     }
   }
 };

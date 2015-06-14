@@ -1,5 +1,6 @@
 // ----- node_modules
 var _ = require('lodash');
+var ObjectId = require('mongoose').Schema.Types.ObjectId;
 
 // ----- config
 var cfg = global.__require('./config/db-cfg.js').songs;
@@ -60,7 +61,7 @@ module.exports = function (router) {
       } else if (!doc) {
         next(_.assign(new Error('No song found with Id: ' + req.params.songsId), { status: 404 }));
       } else {
-        res.send(doc.toObject());
+        res.send(doc);
       }
     });
   })
@@ -101,24 +102,26 @@ module.exports = function (router) {
     });
   })
   .get('/songs/:songId/media', function (req, res, next) {
-    SongModel.findById(req.params.songId).lean().exec(function (err, doc) {
+    SongModel.findById(req.params.songId).exec(function (err, doc) {
       if (err) {
         next(err);
       } else if (!doc) {
         next(_.assign(new Error('No song found with Id: ' + req.params.songsId), { status: 404 }));
       } else {
+        doc.listened += 1;
         storage.media(doc.path, function (err, url, expireAt) {
           if (err) {
             next (err);
           } else {
-            res.send({ url: url, expireAt: expireAt });
+            res.send({ url: url, expireAt: expireAt, listened: doc.listened });
           }
         });
+        doc.save();
       }
     });
   })
-  .post('/songs/:songId/rate', security.ensureAuthenticated, function (req, res, next) {
-    var rate = parseFloat(req.query.rate);
+  .post('/songs/:songId/rate/:rate', security.ensureAuthenticated, function (req, res, next) {
+    var rate = parseFloat(req.params.rate);
     if (isNaN(rate)) {
       next(_.assign(new Error('querystring.rate must be a number'), { status: 403 }));
     } else {
@@ -129,6 +132,10 @@ module.exports = function (router) {
         } else if (!song) {
           next(_.assign(new Error('No song found with songId: ' + req.params.songId), { status: 404 }));
         } else {
+          var pull = _.find(song.raters, function (rater) {
+            return req.user.id == rater.userId;
+          });
+          song.raters.pull(pull);
           song.raters.push({
             userId: req.user.id,
             rate: rate 

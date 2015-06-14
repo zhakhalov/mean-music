@@ -126,6 +126,9 @@ function TokenIdMiddleware (req, res, next) {
   }
 }
 
+// -----------------------------------------------------------------------
+//                                  EXPORTS
+// -----------------------------------------------------------------------
 module.exports = {
   signIn: signIn,
   signUp: signUp,

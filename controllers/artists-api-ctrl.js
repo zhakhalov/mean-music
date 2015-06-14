@@ -103,8 +103,8 @@ module.exports = function (router) {
       }
     });
   })
-  .post('/artists/:artistId/rate', security.ensureAuthenticated, function (req, res, next) {
-    var rate = parseFloat(req.query.rate);
+  .post('/artists/:artistId/rate/:rate', security.ensureAuthenticated, function (req, res, next) {
+    var rate = parseFloat(req.params.rate);
     if (isNaN(rate)) {
       next(_.assign(new Error('querystring.rate must be a number'), { status: 403 }));
     } else {
@@ -115,6 +115,10 @@ module.exports = function (router) {
         } else if (!artist) {
           next(_.assign(new Error('No artist found with artistId: ' + req.params.artistId), { status: 404 }));
         } else {
+          var pull = _.find(artist.raters, function (rater) {
+            return req.user.id == rater.userId;
+          });
+          artist.raters.pull(pull);
           artist.raters.push({
             userId: req.user.id,
             rate: rate 

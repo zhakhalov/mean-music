@@ -4,7 +4,7 @@ var VoteSchema = require('./vote-schema.js');
 
 var AlbumSchema = mongoose.Schema({
   name: { type: String, required: true },                                         //  Album name.
-  year: { type: String },                                                         //  Release year.
+  release: { type: Date },                                                        //  Release date.
   img: { type: String },                                                          //  URL of album thumb image.
   desc: { type: String },                                                         //  About album.
   artists: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Artist' }],             //  Artists.
@@ -24,4 +24,7 @@ var AlbumSchema = mongoose.Schema({
   updatedAt: { type:Date, default: Date.now }                                     //  Last update date.
 });
 
+// -----------------------------------------------------------------------
+//                                  EXPORTS
+// -----------------------------------------------------------------------
 module.exports = mongoose.model('Album', AlbumSchema);

@@ -14,6 +14,7 @@ var SongSchema = mongoose.Schema({
   tags: [{type: String, trim: true }],                                            //  Tags.
   raters: [VoteSchema],                                                           //  Raters.
   rating: { type: Number, min: 0, max: 10, default: 0 },                          //  Rating.
+  listened: { type: Number, min: 0, default: 0 },                                 //  How many times song was listened.
   createdBy: {                                                                    //  Creator of song.
     name: { type: String, required: true },                                       //  Name of user.
     userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true } //  UserId.
@@ -26,4 +27,7 @@ var SongSchema = mongoose.Schema({
   updatedAt: { type:Date, default: Date.now }                                     //  Last update date.
 });
 
+// -----------------------------------------------------------------------
+//                                  EXPORTS
+// -----------------------------------------------------------------------
 module.exports = mongoose.model('Song', SongSchema);

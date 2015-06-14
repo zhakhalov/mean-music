@@ -59,7 +59,7 @@ module.exports = function (router) {
       } else if (!doc) {
         next(_.assign(new Error('No album found with Id: ' + req.params.albumId), { status: 404 }));
       } else {
-        res.send(doc.toObject());
+        res.send(doc);
       }
     });
   })
@@ -99,8 +99,8 @@ module.exports = function (router) {
       }
     });
   })
-  .post('/albums/:albumId/rate', security.ensureAuthenticated, function (req, res, next) {
-    var rate = parseFloat(req.query.rate);
+  .post('/albums/:albumId/rate/:rate', security.ensureAuthenticated, function (req, res, next) {
+    var rate = parseFloat(req.params.rate);
     if (isNaN(rate)) {
       next(_.assign(new Error('querystring.rate must be a number'), { status: 403 }));
     } else {
@@ -111,6 +111,10 @@ module.exports = function (router) {
         } else if (!album) {
           next(_.assign(new Error('No album found with albumId: ' + req.params.albumId), { status: 404 }));
         } else {
+          var pull = _.find(album.raters, function (rater) {
+            return req.user.id == rater.userId;
+          });
+          album.raters.pull(pull);
           album.raters.push({
             userId: req.user.id,
             rate: rate 

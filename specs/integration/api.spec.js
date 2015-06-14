@@ -19,18 +19,18 @@ describe('/api', function () {
     app = server(1337, 'localhost');
   });
   after(function () {
-    superagent
-    .get(API_ROUTE + 'users/removeall')
-    .end(function () { });
-    superagent
-    .get(API_ROUTE + 'artists/removeall')
-    .end(function () { });
-    superagent
-    .get(API_ROUTE + 'albums/removeall')
-    .end(function () { });
-    superagent
-    .get(API_ROUTE + 'songs/removeall')
-    .end(function () { });
+    // superagent
+    // .get(API_ROUTE + 'users/removeall')
+    // .end(function () { });
+    // superagent
+    // .get(API_ROUTE + 'artists/removeall')
+    // .end(function () { });
+    // superagent
+    // .get(API_ROUTE + 'albums/removeall')
+    // .end(function () { });
+    // superagent
+    // .get(API_ROUTE + 'songs/removeall')
+    // .end(function () { });
   });
   after(function () {
     app.close();
@@ -231,7 +231,7 @@ describe('/api', function () {
       
       it('should got authorization error while rating artist Arrowhead ', function(done) {
         superagent
-        .post(API_ROUTE + 'artists/' + artists['Arrowhead']._id + '/rate?rate=sadfsfg')
+        .post(API_ROUTE + 'artists/' + artists['Arrowhead']._id + '/rate/sadfsfg')
         .end(function (err, res) {
           expect(err).not.equal(null);
           expect(res.status).equal(401);
@@ -241,7 +241,7 @@ describe('/api', function () {
       
       it('should got Not Allowed while rate artist Arrowhead with wrong rate param', function(done) {
         superagent
-        .post(API_ROUTE + 'artists/' + artists['Arrowhead']._id + '/rate?rate=sadfsfg')
+        .post(API_ROUTE + 'artists/' + artists['Arrowhead']._id + '/rate/sadfsfg')
         .set('Authorization', 'Bearer ' + token)
         .set('Accept', 'application/json')
         .end(function (err, res) {
@@ -251,15 +251,28 @@ describe('/api', function () {
         });
       });
       
-      it('should rate artist Arrowhead succesfully', function(done) {
+      it('should rate artist Arrowhead', function(done) {
         superagent
-        .post(API_ROUTE + 'artists/' + artists['Arrowhead']._id + '/rate?rate=5')
+        .post(API_ROUTE + 'artists/' + artists['Arrowhead']._id + '/rate/5')
         .set('Authorization', 'Bearer ' + token)
         .set('Accept', 'application/json')
         .end(function (err, res) {
           expect(err).equal(null);
           expect(res.status).equal(200);
           expect(res.body.rating).equal(5);
+          done();
+        });
+      });
+      
+      it('should rate artist Arrowhead secondary', function(done) {
+        superagent
+        .post(API_ROUTE + 'artists/' + artists['Arrowhead']._id + '/rate/7')
+        .set('Authorization', 'Bearer ' + token)
+        .set('Accept', 'application/json')
+        .end(function (err, res) {
+          expect(err).equal(null);
+          expect(res.status).equal(200);
+          expect(res.body.rating).equal(7);
           done();
         });
       });
@@ -308,7 +321,7 @@ describe('/api', function () {
       it('should got authorization error while updating album Funkyard Single', function(done) {
         superagent
         .put(API_ROUTE + 'albums/' + albums['Funkyard Single']._id)
-        .send({ name: 'Funkyard Single', img: 'img/funkyard.jpg' })
+        .send({ name: 'Funkyard Single', img: 'img/arrowhead-and-zenta_-_funkyard-single.jpg.jpg' })
         .end(function (err, res) {
           expect(err).not.equal(null);
           expect(res.status).equal(401);
@@ -321,7 +334,7 @@ describe('/api', function () {
         .put(API_ROUTE + 'albums/' + albums['Funkyard Single']._id)
         .send({
           name: 'Funkyard Single',
-          img: 'img/funkyard.jpg',
+          img: 'img/arrowhead-and-zenta_-_funkyard-single.jpg.jpg',
           artists: [ artists['Arrowhead']._id, artists['Zenta']._id ]
         })
         .set('Authorization', 'Bearer ' + token)
@@ -334,7 +347,7 @@ describe('/api', function () {
           expect(res.body.artists).to.contain(artists['Arrowhead']._id);
           expect(res.body.artists).to.contain(artists['Zenta']._id);
           expect(res.body.name).equal('Funkyard Single');
-          expect(res.body.img).equal('img/funkyard.jpg');
+          expect(res.body.img).equal('img/arrowhead-and-zenta_-_funkyard-single.jpg.jpg');
           
           albums['Funkyard Single'] = res.body;
           
@@ -359,7 +372,7 @@ describe('/api', function () {
       
       it('should got authorization error while rating albums Funkyard Single ', function(done) {
         superagent
-        .post(API_ROUTE + 'albums/' + albums['Funkyard Single']._id + '/rate?rate=sadfsfg')
+        .post(API_ROUTE + 'albums/' + albums['Funkyard Single']._id + '/rate/sadfsfg')
         .end(function (err, res) {
           expect(err).not.equal(null);
           expect(res.status).equal(401);
@@ -369,7 +382,7 @@ describe('/api', function () {
       
       it('should got Not Allowed while rate albums Funkyard Single with wrong rate param', function(done) {
         superagent
-        .post(API_ROUTE + 'albums/' + albums['Funkyard Single']._id + '/rate?rate=sadfsfg')
+        .post(API_ROUTE + 'albums/' + albums['Funkyard Single']._id + '/rate/sadfsfg')
         .set('Authorization', 'Bearer ' + token)
         .set('Accept', 'application/json')
         .end(function (err, res) {
@@ -379,15 +392,28 @@ describe('/api', function () {
         });
       });
       
-      it('should rate albums Funkyard Single succesfully', function(done) {
+      it('should rate albums Funkyard Single', function(done) {
         superagent
-        .post(API_ROUTE + 'albums/' + albums['Funkyard Single']._id + '/rate?rate=5')
+        .post(API_ROUTE + 'albums/' + albums['Funkyard Single']._id + '/rate/5')
         .set('Authorization', 'Bearer ' + token)
         .set('Accept', 'application/json')
         .end(function (err, res) {
           expect(err).equal(null);
           expect(res.status).equal(200);
           expect(res.body.rating).equal(5);
+          done();
+        });
+      });
+      
+      it('should rate albums Funkyard Single secondary', function(done) {
+        superagent
+        .post(API_ROUTE + 'albums/' + albums['Funkyard Single']._id + '/rate/7')
+        .set('Authorization', 'Bearer ' + token)
+        .set('Accept', 'application/json')
+        .end(function (err, res) {
+          expect(err).equal(null);
+          expect(res.status).equal(200);
+          expect(res.body.rating).equal(7);
           done();
         });
       });
@@ -436,7 +462,7 @@ describe('/api', function () {
       it('should got authorization error while updating album Funkyard', function(done) {
         superagent
         .put(API_ROUTE + 'songs/' + songs['Funkyard']._id)
-        .send({ name: 'Funkyard', img: 'img/funkyard.jpg' })
+        .send({ name: 'Funkyard', img: 'img/arrowhead-and-zenta_-_funkyard-single.jpg.jpg' })
         .end(function (err, res) {
           expect(err).not.equal(null);
           expect(res.status).equal(401);
@@ -449,7 +475,7 @@ describe('/api', function () {
         .put(API_ROUTE + 'songs/' + songs['Funkyard']._id)
         .send({
           name: 'Funkyard',
-          img: 'img/funkyard.jpg',
+          img: 'img/arrowhead-and-zenta_-_funkyard-single.jpg.jpg',
           artists: [ artists['Arrowhead']._id, artists['Zenta']._id ],
           albums: [albums['Funkyard Single']._id]
         })
@@ -464,7 +490,7 @@ describe('/api', function () {
           expect(res.body.artists).to.contain(artists['Zenta']._id);
           expect(res.body.albums).to.contain(albums['Funkyard Single']._id);
           expect(res.body.name).equal('Funkyard');
-          expect(res.body.img).equal('img/funkyard.jpg');
+          expect(res.body.img).equal('img/arrowhead-and-zenta_-_funkyard-single.jpg.jpg');
           
           songs['Funkyard'] = res.body;
           
@@ -489,7 +515,7 @@ describe('/api', function () {
       
       it('should got authorization error while rating songs Funkyard ', function(done) {
         superagent
-        .post(API_ROUTE + 'songs/' + songs['Funkyard']._id + '/rate?rate=sadfsfg')
+        .post(API_ROUTE + 'songs/' + songs['Funkyard']._id + '/rate/sadfsfg')
         .end(function (err, res) {
           expect(err).not.equal(null);
           expect(res.status).equal(401);
@@ -499,7 +525,7 @@ describe('/api', function () {
       
       it('should got Not Allowed while rate songs Funkyard with wrong rate param', function(done) {
         superagent
-        .post(API_ROUTE + 'songs/' + songs['Funkyard']._id + '/rate?rate=sadfsfg')
+        .post(API_ROUTE + 'songs/' + songs['Funkyard']._id + '/rate/sadfsfg')
         .set('Authorization', 'Bearer ' + token)
         .set('Accept', 'application/json')
         .end(function (err, res) {
@@ -509,15 +535,28 @@ describe('/api', function () {
         });
       });
       
-      it('should rate songs Funkyard succesfully', function(done) {
+      it('should rate song Funkyard', function(done) {
         superagent
-        .post(API_ROUTE + 'songs/' + songs['Funkyard']._id + '/rate?rate=5')
+        .post(API_ROUTE + 'songs/' + songs['Funkyard']._id + '/rate/5')
         .set('Authorization', 'Bearer ' + token)
         .set('Accept', 'application/json')
         .end(function (err, res) {
           expect(err).equal(null);
           expect(res.status).equal(200);
           expect(res.body.rating).equal(5);
+          done();
+        });
+      });
+      
+      it('should rate song Funkyard secondary', function(done) {
+        superagent
+        .post(API_ROUTE + 'songs/' + songs['Funkyard']._id + '/rate/7')
+        .set('Authorization', 'Bearer ' + token)
+        .set('Accept', 'application/json')
+        .end(function (err, res) {
+          expect(err).equal(null);
+          expect(res.status).equal(200);
+          expect(res.body.rating).equal(7);
           done();
         });
       });
@@ -533,6 +572,19 @@ describe('/api', function () {
           expect(err).equal(null);
           expect(res.status).equal(200);
           expect(res.body.url).not.null;
+          expect(res.body.listened).equal(1);
+          done();
+        });
+      });
+      
+      it('sould increment listened to 2', function(done) {
+        superagent
+        .get(API_ROUTE + 'songs/' + songs['Funkyard']._id + '/media')
+        .end(function (err, res) {
+          expect(err).equal(null);
+          expect(res.status).equal(200);
+          expect(res.body.url).not.null;
+          expect(res.body.listened).equal(2);
           done();
         });
       });

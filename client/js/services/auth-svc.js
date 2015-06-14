@@ -25,10 +25,13 @@
           });
         });
       };
+      
       /**
+       * @kind function
        * Sing in user
-       * @param login {String} user's login
-       * @param password {String} user's password
+       * @param {String} login user's login
+       * @param {String} password user's password
+       * @return {Promise}
        */
       self.signIn = function (login, password) {
         return $q(function (resolve, reject) {
@@ -43,7 +46,11 @@
       };
       /**
        * Register user
-       * @param user {{ username: String, password: String, email: String }} user
+       * @param {Object} user Registered user
+       * @param {String} user.name  Name
+       * @param {String} user.email Email
+       * @param {String} user.password Password
+       * @return {Promise}
        */
       self.signUp = function (user) {
         return $q(function (resolve, reject) {

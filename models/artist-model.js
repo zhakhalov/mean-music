@@ -22,4 +22,7 @@ var ArtistSchema = mongoose.Schema({
   updatedAt: { type:Date, default: Date.now }                                     //  Last update date.
 });
 
+// -----------------------------------------------------------------------
+//                                  EXPORTS
+// -----------------------------------------------------------------------
 module.exports = mongoose.model('Artist', ArtistSchema);
