@@ -4,14 +4,15 @@ var VoteSchema = require('./vote-schema.js');
 
 var GenreSchema = mongoose.Schema({
   name: { type: String, required: true, unique: true, trim: true },               //  Genre name.
-  img: { type: String },                                                          //  Path to image file at Dropbox.
+  desc: { type: String },                                                         //  Description of genre.
+  img: { type: String },                                                          //  Url to image.
   raters: [VoteSchema],                                                           //  Raters.
   rating: { type: Number, min: 0, max: 10, default: 0 },                          //  Rating.
-  createdBy: {                                                                    //  Creator of song.
+  createdBy: {                                                                    //  User which created Genre.
     name: { type: String, required: true },                                       //  Name of user.
     userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true } //  UserId.
   },
-  updatedBy: {                                                                    //  User that updated Song last.
+  updatedBy: {                                                                    //  User which updated Genre last.
     name: { type: String, required: true },                                       //  Name of user.
     userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true } //  UserId.
   },

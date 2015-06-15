@@ -5,7 +5,7 @@ var VoteSchema = require('./vote-schema.js');
 var SongSchema = mongoose.Schema({
   path: { type: String, required: true },                                         //  Path to audio file at Dropbox.
   name: { type: String, required: true, trim: true },                             //  Song name.
-  duration: { type: Number },                                                     //  Song duration.
+  duration: { type: Number, min: 0, default: 0 },                                 //  Song duration.
   img: { type: String },                                                          //  url to image.
   desc: { type: String },                                                         //  About this song.
   artists: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Artist' }],             //  Artists.

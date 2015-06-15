@@ -5,6 +5,7 @@ var UserSchema = new mongoose.Schema({
   email: { type:String },                       //  User's email for users registered via sign up.
   password: { type:String },                    //  Hashsed password for users registered via sign up.
   avatar: { type:String },                      //  User's avatar filename.
+  about: { type:String },                       //  Short information about user.
   roles: { type:Array, default: ['user'] },     //  Autorization roles
   googleId: { type:String },                    //  Google OAuth profile.id
   facebookId: { type:String },                  //  Facebook Oauth profile.id
