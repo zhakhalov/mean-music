@@ -2,7 +2,7 @@
 Provides Array of Artists.
 
 ####Resoure Information
-|                      |
+|                      |                    |
 |----------------------|-----------------
 | URL                  | *api/songs?query={query}&select={select}&sort={sort}&skip={skip}&limit={limit}*
 | Method               | *GET*
@@ -27,7 +27,7 @@ Provides Array of Artists.
 Create new Song document.
 
 ####Resoure Information
-|                       |
+|                       |                    |
 |-----------------------|-----------------
 | URL                   | *api/songs*
 | Method                | *POST*
@@ -45,7 +45,7 @@ Create new Song document.
 Get Song document by _id.
 
 ####Resoure Information
-|                       |
+|                       |                    |
 |-----------------------|-----------------
 | URL                   | *api/songs/{songId}*
 | Method                | *GET*
@@ -66,7 +66,7 @@ Get Song document by _id.
 Update Song document.
 
 ####Resoure Information
-|                       |
+|                       |                    |
 |-----------------------|-----------------
 | URL                   | *api/songs/{songId}*
 | Method                | *PUT*
@@ -89,7 +89,7 @@ Update Song document.
 Removes Song. Return **_id** of removed document if succes.
 
 ####Resoure Information
-|                      |
+|                      |                    |
 |----------------------|-----------------
 | URL                  | *api/songs/{songId}*
 | Method               | *DELETE*
@@ -109,7 +109,7 @@ Removes Song. Return **_id** of removed document if succes.
 Get stream url. Increment field *listened*.
 
 ####Resoure Information
-|                      |
+|                      |                    |
 |----------------------|-----------------
 | URL                  | *api/songs/{songId}/media*
 | Method               | *DELETE*
@@ -129,7 +129,7 @@ Get stream url. Increment field *listened*.
 Rate Album. Rate range: 0..10
 
 ####Resoure Information
-|                      |
+|                      |                    |
 |----------------------|-----------------
 | URL                  | *api/songs/{songId}/rate/{rate}*
 | Method               | *DELETE*

@@ -2,7 +2,7 @@
 Refresh Access token.
 
 ####Resoure Information
-|                      |
+|                      |                    |
 |----------------------|-----------------
 | URL                  | *api/auth/token*
 | Method               | *GET*
@@ -18,7 +18,7 @@ Refresh Access token.
 Sign In User.
 
 ####Resoure Information
-|                      |
+|                      |                    |
 |----------------------|-----------------
 | URL                  | *api/auth/signin*
 | Method               | *POST*
@@ -34,7 +34,7 @@ Sign In User.
 Register new user.
 
 ####Resoure Information
-|                      |
+|                      |                    |
 |----------------------|-----------------
 | URL                  | *api/auth/signup*
 | Method               | *POST*

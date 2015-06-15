@@ -2,7 +2,7 @@
 Checks existence of login.
 
 ####Resoure Information
-|                      |
+|                      |                    |
 |----------------------|-----------------
 | URL                  | *api/users/exists?login={login}*
 | Method               | *GET*
@@ -23,7 +23,7 @@ Checks existence of login.
 Provides public user information by id.
 
 ####Resoure Information
-|                      |
+|                      |                    |
 |----------------------|-----------------
 | URL                  | *api/users/{userId}*
 | Method               | *GET*
@@ -44,7 +44,7 @@ Provides public user information by id.
 Gets information about current user based on **Authorization** header
 
 ####Resoure Information
-|                      |
+|                      |                    |
 |----------------------|-----------------
 | URL                  | *api/users/me*
 | Method               | *GET*
@@ -61,7 +61,7 @@ Gets information about current user based on **Authorization** header
 Update current user user.
 
 ####Resoure Information
-|                      |
+|                      |                    |
 |----------------------|-----------------
 | URL                  | *api/users/me*
 | Method               | *PUT*
@@ -80,7 +80,7 @@ Update current user user.
 Removes user.
 
 ####Resoure Information
-|                      |
+|                      |                    |
 |----------------------|-----------------
 | URL                  | *api/users/{userId}*
 | Method               | *DELETE*

@@ -2,7 +2,7 @@
 Provides Array of Artists.
 
 ####Resoure Information
-|                      |
+|                      |                    |
 |----------------------|-----------------
 | URL                  | *api/albums?query={query}&select={select}&sort={sort}&skip={skip}&limit={limit}*
 | Method               | *GET*
@@ -27,7 +27,7 @@ Provides Array of Artists.
 Create new Artist DataBase.
 
 ####Resoure Information
-|                       |
+|                       |                    |
 |-----------------------|-----------------
 | URL                   | *api/albums*
 | Method                | *POST*
@@ -45,7 +45,7 @@ Create new Artist DataBase.
 Provides Album instance by _id.
 
 ####Resoure Information
-|                       |
+|                       |                    |
 |-----------------------|-----------------
 | URL                   | *api/albums/{albumId}*
 | Method                | *GET*
@@ -66,7 +66,7 @@ Provides Album instance by _id.
 Update Album instance.
 
 ####Resoure Information
-|                       |
+|                       |                    |
 |-----------------------|-----------------
 | URL                   | *api/albums/{albumId}*
 | Method                | *PUT*
@@ -89,7 +89,7 @@ Update Album instance.
 Removes Album. Return **_id** of removed document if succes.
 
 ####Resoure Information
-|                      |
+|                      |                    |
 |----------------------|-----------------
 | URL                  | *api/albums/{albumId}*
 | Method               | *DELETE*
@@ -109,7 +109,7 @@ Removes Album. Return **_id** of removed document if succes.
 Rate Album. Rate range: 0..10
 
 ####Resoure Information
-|                      |
+|                      |                    |
 |----------------------|-----------------
 | URL                  | *api/albums/{albumId}*
 | Method               | *DELETE*
