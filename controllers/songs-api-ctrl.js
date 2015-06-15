@@ -113,7 +113,7 @@ module.exports = function (router) {
           if (err) {
             next (err);
           } else {
-            res.send({ url: url, expireAt: expireAt, listened: doc.listened });
+            res.send({ url: url, listened: doc.listened });
           }
         });
         doc.save();

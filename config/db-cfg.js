@@ -28,8 +28,8 @@ module.exports = {
       query: {},
       skip: 0, 
       limit: 10,
-      sort: '-rating',
-      select: '_id name img rating'
+      sort: 'name',
+      select: '_id name img rating genres'
     }
   },
   albums: {
@@ -38,8 +38,8 @@ module.exports = {
       query: {},
       skip: 0, 
       limit: 10,
-      sort: '-rating',
-      select: '_id name img rating artists release'
+      sort: '-release',
+      select: '_id name img rating artists genres release'
     }
   },
   songs: {

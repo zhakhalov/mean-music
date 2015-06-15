@@ -99,7 +99,7 @@ module.exports = function (router) {
       if (err) {
         next(err);
       } else {
-        res.send('Artist succesfully removed.');
+        res.send(req.params.artistId);
       }
     });
   })

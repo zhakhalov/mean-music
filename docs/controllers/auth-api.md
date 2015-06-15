@@ -1,36 +1,49 @@
-###api/auth/token
-Refresh access token.
+###GET api/auth/token
+Refresh Access token.
 
-|                       |                                 
-|-----------------------|-----------------------          
-|Method                 |__GET__                         
-|Response data type     |_JSON_                 
-|Response body          |`{ token: {String} }`  
-|Success code           |200
-|Error code             |401, 500
+####Resoure Information
+|                      |
+|----------------------|-----------------
+| URL                  | *api/auth/token*
+| Method               | *GET*
+| Response formats     | *JSON*                 
+| Response data        | `{ token: {String} }`  
+| Require autorization | **yes**
+| Success codes        | 200
+| Error codes          | 401
 
-###api/auth/signin
-Sign-In user.
+***
 
-|                       |                       
-|-----------------------|-----------------------
-|Method                 |__POST__               
-|Request data type      |_JSON_                 
-|Request body           |`{ login: {String}, password: {String} }`  
-|Response data type     |_JSON_                 
-|Response body          |`{ user: {UserModel}, token: {String} }` 
-|Success code           |200
-|Error code             |401, 500
+###POST api/auth/signin
+Sign In User.
 
-###api/auth/signup
-Sign-Up new user.
+####Resoure Information
+|                      |
+|----------------------|-----------------
+| URL                  | *api/auth/signin*
+| Method               | *POST*
+| Response formats     | *JSON*                 
+| Response data        | `{ token: {String}, user: {UserModel} }`  
+| Require autorization | *no*
+| Success codes        | 200
+| Error codes          | 401, 500
 
-|                       |                       
-|-----------------------|-----------------------
-|Method                 |__POST__               
-|Request data type      |_JSON_                 
-|Request body           |`{UserModel}`  
-|Response data type     |_JSON_                 
-|Response body          |`{ user: {UserModel}, token: {String} }`
-|Success code           |200
-|Error code             |401, 500
+***
+
+###POST api/auth/signup
+Register new user.
+
+####Resoure Information
+|                      |
+|----------------------|-----------------
+| URL                  | *api/auth/signup*
+| Method               | *POST*
+| Response formats     | *JSON*                 
+| Response data        | `{ name: {String}, password: {String}, email: {String} }` 
+| Response formats     | *JSON*                 
+| Response data        | `{ token: {String}, user: {UserModel} }`  
+| Require autorization | *no*
+| Success codes        | 200
+| Error codes          | 401, 409, 500
+
+***
