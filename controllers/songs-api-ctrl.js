@@ -8,6 +8,7 @@ var cfg = global.__require('./config/db-cfg.js').songs;
 // ----- custom modules
 var security = global.__require('./modules/security');
 var storage = global.__require('./modules/storage');
+var rating = global.__require('./modules/rating');
 
 // ----- models
 var SongModel = global.__require('./models/song-model.js');
@@ -132,15 +133,7 @@ module.exports = function (router) {
         } else if (!song) {
           next(_.assign(new Error('No song found with songId: ' + req.params.songId), { status: 404 }));
         } else {
-          var pull = _.find(song.raters, function (rater) {
-            return req.user.id == rater.userId;
-          });
-          song.raters.pull(pull);
-          song.raters.push({
-            userId: req.user.id,
-            rate: rate 
-          });
-          song.rating = _.sum(song.raters.map(function (entry) { return entry.rate })) / song.raters.length;
+          rating.rate(req.user.id, song, rate);
           song.save(function (err) {
             if (err) {
               next(err);

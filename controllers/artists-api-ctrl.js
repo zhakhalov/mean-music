@@ -3,16 +3,13 @@ var _ = require('lodash');
 
 // ----- config
 var aritstsDbCfg = global.__require('./config/db-cfg.js').artists;
-var albumsDbCfg = global.__require('./config/db-cfg.js').albums;
-var songsDbCfg = global.__require('./config/db-cfg.js').songs;
 
 // ----- custom modules
 var security = global.__require('./modules/security');
+var rating = global.__require('./modules/rating');
 
 // ----- models
 var ArtistModel = global.__require('./models/artist-model.js');
-var AlbumModel = global.__require('./models/album-model.js');
-var SongModel = global.__require('./models/song-model.js');
 
 module.exports = function (router) {
   router
@@ -115,15 +112,7 @@ module.exports = function (router) {
         } else if (!artist) {
           next(_.assign(new Error('No artist found with artistId: ' + req.params.artistId), { status: 404 }));
         } else {
-          var pull = _.find(artist.raters, function (rater) {
-            return req.user.id == rater.userId;
-          });
-          artist.raters.pull(pull);
-          artist.raters.push({
-            userId: req.user.id,
-            rate: rate 
-          });
-          artist.rating = _.sum(artist.raters.map(function (entry) { return entry.rate })) / artist.raters.length;
+          rating.rate(req.user.id, artist, rate);
           artist.save(function (err) {
             if (err) {
               next(err);
