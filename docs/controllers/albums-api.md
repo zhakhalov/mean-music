@@ -6,7 +6,7 @@ Provides Array of Artists.
 |----------------------|-----------------
 | URL                  | *api/albums?query={query}&select={select}&sort={sort}&skip={skip}&limit={limit}*
 | Method               | *GET*
-| Response formats     | *JSON*                 
+| Response formats     | *application/json*                 
 | Response data        | `[{AlbumModel}]`  
 | Require autorization | *no*
 | Success codes        | 200
@@ -31,9 +31,9 @@ Create new Artist DataBase.
 |-----------------------|-----------------
 | URL                   | *api/albums*
 | Method                | *POST*
-| Request formats       | *JSON*                 
+| Request formats       | *application/json, multipart/form-data*                 
 | Request data          | `{AlbumModel}`  
-| Response formats      | *JSON*                 
+| Response formats      | *application/json*                 
 | Response data         | `{AlbumModel}`  
 | Require autorization  | **yes**
 | Success codes         | 200
@@ -49,7 +49,7 @@ Provides Album instance by _id.
 |-----------------------|-----------------
 | URL                   | *api/albums/{albumId}*
 | Method                | *GET*
-| Response formats      | *JSON*                 
+| Response formats      | *application/json*                 
 | Response data         | `{AlbumModel}`  
 | Require autorization  | *no*
 | Success codes         | 200
@@ -70,9 +70,9 @@ Update Album instance.
 |-----------------------|-----------------
 | URL                   | *api/albums/{albumId}*
 | Method                | *PUT*
-| Request formats       | *JSON*                 
+| Request formats       | *application/json, multipart/form-data*                 
 | Request data          | `{AlbumModel}` 
-| Response formats      | *JSON*                 
+| Response formats      | *application/json*                 
 | Response data         | `{AlbumModel}`  
 | Require autorization  | *no*
 | Success codes         | 200

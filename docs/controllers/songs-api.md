@@ -6,7 +6,7 @@ Provides Array of Artists.
 |----------------------|-----------------
 | URL                  | *api/songs?query={query}&select={select}&sort={sort}&skip={skip}&limit={limit}*
 | Method               | *GET*
-| Response formats     | *JSON*                 
+| Response formats     | *application/json*                 
 | Response data        | `[{SongModel}]`  
 | Require autorization | *no*
 | Success codes        | 200
@@ -31,9 +31,9 @@ Create new Song document.
 |-----------------------|-----------------
 | URL                   | *api/songs*
 | Method                | *POST*
-| Request formats       | *JSON*                 
+| Request formats       | *application/json, multipart/form-data*                 
 | Request data          | `{SongModel}`  
-| Response formats      | *JSON*                 
+| Response formats      | *application/json*                 
 | Response data         | `{SongModel}`  
 | Require autorization  | **yes**
 | Success codes         | 200
@@ -49,7 +49,7 @@ Get Song document by _id.
 |-----------------------|-----------------
 | URL                   | *api/songs/{songId}*
 | Method                | *GET*
-| Response formats      | *JSON*                 
+| Response formats      | *application/json*                 
 | Response data         | `{SongModel}`  
 | Require autorization  | *no*
 | Success codes         | 200
@@ -70,9 +70,9 @@ Update Song document.
 |-----------------------|-----------------
 | URL                   | *api/songs/{songId}*
 | Method                | *PUT*
-| Request formats       | *JSON*                 
+| Request formats       | *application/json, multipart/form-data*                 
 | Request data          | `{SongModel}` 
-| Response formats      | *JSON*                 
+| Response formats      | *application/json*                 
 | Response data         | `{SongModel}`  
 | Require autorization  | **yes**
 | Success codes         | 200

@@ -11,7 +11,7 @@ var SongSchema = mongoose.Schema({
   artists: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Artist' }],             //  Artists.
   albums: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Album' }],               //  Albums.
   genres: [{type: String, lowercase: true, trim: true }],                         //  Genres.
-  tags: [{type: String, trim: true }],                                            //  Tags.
+  tags: [{type: String, lowercase: true, trim: true }],                           //  Tags.
   raters: [VoteSchema],                                                           //  Raters.
   rating: { type: Number, min: 0, max: 10, default: 0 },                          //  Rating.
   listened: { type: Number, min: 0, default: 0 },                                 //  How many times song was listened.

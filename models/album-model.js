@@ -9,7 +9,7 @@ var AlbumSchema = mongoose.Schema({
   desc: { type: String },                                                         //  About album.
   artists: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Artist' }],             //  Artists.
   genres: [{type: String, lowercase: true, trim: true }],                         //  Genres.
-  tags: [{type: String, trim: true }],                                            //  Tags.
+  tags: [{type: String, lowercase: true, trim: true }],                           //  Tags.
   raters: [VoteSchema],                                                           //  Raters.
   rating: { type: Number, min: 0, max: 10, default: 0 },                          //  Rating.
   createdBy: {                                                                    //  User that created Song.

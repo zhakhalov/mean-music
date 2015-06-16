@@ -2,7 +2,7 @@
 var _ = require('lodash');
 
 // ----- config
-var aritstsDbCfg = global.__require('./config/db-cfg.js').artists;
+var cfg = global.__require('./config/db-cfg.js').artists;
 
 // ----- custom modules
 var security = global.__require('./modules/security');
@@ -19,12 +19,48 @@ module.exports = function (router) {
       if (err) {
         next(err);
       } else {
-        res.send('All users succesfully removed.');
+        res.send('All artists succesfully removed.');
+      }
+    });
+  })
+  .get('/artists/tag/:tag', function (req, res, next) {
+    var query = _.defaults(req.query, cfg.defaultQuery);
+    var tag = req.params.tag.toLowerCase().replace(/\-/ig, ' ');
+    
+    ArtistModel.find({ tags: tag })
+    .sort(query.sort)
+    .skip(query.skip)
+    .limit(query.limit)
+    .select(query.select)
+    .lean()
+    .exec(function (err, docs) {
+      if (err) {
+        next(err);
+      } else {
+        res.send(docs);
+      }
+    });
+  })
+  .get('/artists/genre/:genre', function (req, res, next) {
+    var query = _.defaults(req.query, cfg.defaultQuery);
+    var genre = req.params.genre.toLowerCase().replace(/\-/ig, ' ');
+    
+    ArtistModel.find({ genres: genre })
+    .sort(query.sort)
+    .skip(query.skip)
+    .limit(query.limit)
+    .select(query.select)
+    .lean()
+    .exec(function (err, docs) {
+      if (err) {
+        next(err);
+      } else {
+        res.send(docs);
       }
     });
   })
   .get('/artists', function (req, res, next) {
-    var query = _.defaults(req.query, aritstsDbCfg.defaultQuery);
+    var query = _.defaults(req.query, cfg.defaultQuery);
     
     ArtistModel.find(query.query)
     .sort(query.sort)
@@ -80,7 +116,7 @@ module.exports = function (router) {
           }
         });
       } else {
-        artist = _.assign(artist, _.omit(req.body, aritstsDbCfg.preventUpdate));
+        artist = _.assign(artist, _.omit(req.body, cfg.preventUpdate));
         artist.save(function (err) {
           if (err) {
             next(err);

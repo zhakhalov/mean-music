@@ -6,8 +6,8 @@ var ArtistSchema = mongoose.Schema({
   name: { type: String, required: true, unique: true },                           //  Name of the artist.
   img: { type: String },                                                          //  URL of an image on artist's page.
   desc: { type: String },                                                         //  About artist.
-  genres: [{type: String, trim: true }],                                          //  Genres.
-  tags: [{type: String, trim: true }],                                            //  Tags.
+  genres: [{type: String, trim: true, lowercase: true }],                         //  Genres.
+  tags: [{type: String, trim: true, lowercase: true }],                           //  Tags.
   raters: [VoteSchema],                                                           //  Raters.
   rating: { type: Number, min: 0, max: 10, default: 0 },                          //  Rating.
   createdBy: {                                                                    //  User that created Artist.

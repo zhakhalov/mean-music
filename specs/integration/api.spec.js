@@ -18,7 +18,14 @@ describe('/api', function () {
   before(function () {
     app = server(1337, 'localhost');
   });
+  
   after(function () {
+    // superagent
+    // .get(API_ROUTE + 'genres/removeall')
+    // .end(function () { });
+    // superagent
+    // .get(API_ROUTE + 'tags/removeall')
+    // .end(function () { });
     // superagent
     // .get(API_ROUTE + 'users/removeall')
     // .end(function () { });
@@ -32,6 +39,7 @@ describe('/api', function () {
     // .get(API_ROUTE + 'songs/removeall')
     // .end(function () { });
   });
+  
   after(function () {
     app.close();
   });
@@ -45,6 +53,27 @@ describe('/api', function () {
       done();
     });
   });
+  
+  it('should remove all genres', function (done) {
+    superagent
+    .get(API_ROUTE + 'genres/removeall')
+    .end(function (err, res) {
+      expect(err).to.equal(null);
+      expect(res.status).equal(200);
+      done();
+    });
+  });
+  
+  it('should remove all tags', function (done) {
+    superagent
+    .get(API_ROUTE + 'tags/removeall')
+    .end(function (err, res) {
+      expect(err).to.equal(null);
+      expect(res.status).equal(200);
+      done();
+    });
+  });
+  
   it('should remove all artists', function (done) {
     superagent
     .get(API_ROUTE + 'artists/removeall')
@@ -54,6 +83,7 @@ describe('/api', function () {
       done();
     });
   });
+  
   it('should remove all albums', function (done) {
     superagent
     .get(API_ROUTE + 'albums/removeall')
@@ -63,6 +93,7 @@ describe('/api', function () {
       done();
     });
   });
+  
   it('should remove all songs', function (done) {
     superagent
     .get(API_ROUTE + 'songs/removeall')
@@ -72,11 +103,13 @@ describe('/api', function () {
       done();
     });
   });
+  
   describe('/auth', function() {
+    
     it('should sign up succefully', function(done) {
       superagent
       .post(API_ROUTE + 'auth/signup')
-      .send({ name: 'monolith', email: 'user@email.com',  password: '123456' })
+      .send({ name: 'monolith', email: 'monolith@email.com',  password: '123456' })
       .set('Accept', 'application/json')
       .end(function (err, res) {
         expect(err).equal(null);
@@ -84,14 +117,15 @@ describe('/api', function () {
         expect(res.body.user).to.be.not.undefined;
         expect(res.body.token).to.be.not.undefined;
         expect(res.body.user.name).to.be.equal('monolith');
-        expect(res.body.user.email).to.be.equal('user@email.com');
+        expect(res.body.user.email).to.be.equal('monolith@email.com');
         done();
       });
     });  
+    
     it('should sign in succefully', function(done) {
       superagent
       .post(API_ROUTE + 'auth/signin')
-      .send({ login: 'user@email.com',  password: '123456' })
+      .send({ login: 'monolith@email.com',  password: '123456' })
       .set('Accept', 'application/json')
       .end(function (err, res) {
         expect(err).to.equal(null);
@@ -99,12 +133,46 @@ describe('/api', function () {
         expect(res.body.user).to.be.not.undefined;
         expect(res.body.token).to.be.not.undefined;
         expect(res.body.user.name).to.be.equal('monolith');
-        expect(res.body.user.email).to.be.equal('user@email.com');
+        expect(res.body.user.email).to.be.equal('monolith@email.com');
         token = res.body.token; 
         done();
       });
     });  
-  });
+    
+  }); // /auth
+  
+  describe('/genres', function() {
+    
+    describe('/genres POST', function() {
+      
+      it('should got authorization error while creating tag "EDM"', function(done) {
+         superagent
+        .post(API_ROUTE + 'genres')
+        .send({ name: 'EDM' })
+        .end(function(err, res) {
+          expect(err).not.equal(null);
+          expect(res.status).equal(401);
+          done();
+        });
+      });
+      
+      it('should create tag "EDM"', function(done) {
+         superagent
+        .post(API_ROUTE + 'genres')
+        .send({ name: 'EDM' })
+        .set('Authorization', 'Bearer ' + token)
+        .set('Accept', 'application/json')
+        .end(function(err, res) {
+          expect(err).equal(null);
+          expect(res.body.name).equal('edm');
+          done();
+        });
+      });
+      
+    }); // /genres POST
+    
+  }); // /genres
+  
   describe('/artists', function() {
     
     describe('/artists POST', function() {
@@ -122,7 +190,10 @@ describe('/api', function () {
       it('should create Arrowhead', function(done) {
         superagent
         .post(API_ROUTE + 'artists')
-        .send({ name: 'Arrowhead' })
+        .field('name', 'Arrowhead')
+        .field('genres[]', 'edm')
+        .field('genres[]', 'glitch hop')
+        // .send({ name: 'Arrowhead', genres: [ 'edm', 'glitch hop' ] })
         .set('Authorization', 'Bearer ' + token)
         .set('Accept', 'application/json')
         .end(function (err, res) {
@@ -141,7 +212,7 @@ describe('/api', function () {
       it('should create Zenta', function(done) {
         superagent
         .post(API_ROUTE + 'artists')
-        .send({ name: 'Zenta' })
+        .send({ name: 'Zenta', genres: [ 'edm', 'glitch hop' ] })
         .set('Authorization', 'Bearer ' + token)
         .set('Accept', 'application/json')
         .end(function (err, res) {
@@ -174,7 +245,7 @@ describe('/api', function () {
       it('should update Arrowhead succesfully', function(done) {
         superagent
         .put(API_ROUTE + 'artists/' + artists['Arrowhead']._id)
-        .send({ name: 'Arrowhead', img: 'img/arrowhead.jpg' })
+        .send({ name: 'Arrowhead', img: 'img/arrowhead.jpg', tags: [ 'glitch hop' ] })
         .set('Authorization', 'Bearer ' + token)
         .set('Accept', 'application/json')
         .end(function (err, res) {
@@ -194,7 +265,7 @@ describe('/api', function () {
       it('should update Zenta succesfully', function(done) {
         superagent
         .put(API_ROUTE + 'artists/' + artists['Zenta']._id)
-        .send({ name: 'Zenta', img: 'img/zenta.jpg' })
+        .send({ name: 'Zenta', img: 'img/zenta.jpg', tags: [ 'edm' ] })
         .set('Authorization', 'Bearer ' + token)
         .set('Accept', 'application/json')
         .end(function (err, res) {
@@ -213,7 +284,7 @@ describe('/api', function () {
       
     }); // /artists/{artistId} PUT
     
-    describe('/artists/{artistId}', function() {
+    describe('/artists/{artistId} DELETE', function() {
       
       it('should got authorization error while deleting artist Arrowhead ', function(done) {
         superagent
@@ -278,6 +349,10 @@ describe('/api', function () {
       });
       
     }); // /artists/{artistId}/rate
+    
+    describe('artists/genre/{genre}', function() {
+      
+    });
     
   }); // /artists
   

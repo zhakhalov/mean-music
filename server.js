@@ -2,7 +2,7 @@ global.__require = function (path) {
   return require(require('path').join(__dirname, path));
 };
 //-----------------------------------------------------------------
-// npm modules
+// node_modules
 //-----------------------------------------------------------------
 var http = require('http');
 var express = require('express');
@@ -11,6 +11,7 @@ var mongoose = require('mongoose');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var favicon = require('serve-favicon');
+var multer = require('multer');
 
 //-----------------------------------------------------------------
 // modules
@@ -24,7 +25,6 @@ var storage = require('./modules/storage');
 //-----------------------------------------------------------------
 
 var dbCfg = require('./config/db-cfg');
-var storageCfg = global.__require('./config/storage-cfg.js');
 
 //-----------------------------------------------------------------
 // controllers
@@ -35,6 +35,8 @@ var UsersApiCtrl = require('./controllers/users-api-ctrl.js');
 var AlbumsApiCtrl = require('./controllers/albums-api-ctrl.js');
 var ArtistsApiCtrl = require('./controllers/artists-api-ctrl.js');
 var SongsApiCtrl = require('./controllers/songs-api-ctrl.js');
+var GenresApiCtrl = require('./controllers/genres-api-ctrl.js');
+var TagsApiCtrl = require('./controllers/tags-api-ctrl.js');
 var ErrApiCtrl = require('./controllers/err-api-ctrl.js');
 
 var IndexCtrl = require('./controllers/index-ctrl.js');
@@ -50,6 +52,7 @@ var app = express();
 var viewRouter = express.Router();
 var apiRouter = express.Router();
 
+app.use(multer({ dest: './uploads/'}));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
@@ -81,6 +84,8 @@ UsersApiCtrl(apiRouter);
 AlbumsApiCtrl(apiRouter);
 ArtistsApiCtrl(apiRouter);
 SongsApiCtrl(apiRouter);
+GenresApiCtrl(apiRouter);
+TagsApiCtrl(apiRouter);
 ErrApiCtrl(apiRouter);
 
 IndexCtrl(viewRouter);

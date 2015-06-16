@@ -19,7 +19,43 @@ module.exports = function (router) {
       if (err) {
         next(err);
       } else {
-        res.send('All users succesfully removed.');
+        res.send('All albums succesfully removed.');
+      }
+    });
+  })
+  .get('/albums/tag/:tag', function (req, res, next) {
+    var query = _.defaults(req.query, cfg.defaultQuery);
+    var tag = req.params.tag.toLowerCase().replace(/\-/ig, ' ');
+    
+    AlbumModel.find({ tags: tag })
+    .sort(query.sort)
+    .skip(query.skip)
+    .limit(query.limit)
+    .select(query.select)
+    .lean()
+    .exec(function (err, docs) {
+      if (err) {
+        next(err);
+      } else {
+        res.send(docs);
+      }
+    });
+  })
+  .get('/albums/genre', function (req, res, next) {
+    var query = _.defaults(req.query, cfg.defaultQuery);
+    var genre = req.params.genre.toLowerCase().replace(/\-/ig, ' ');
+    
+    AlbumModel.find({ genres: genre })
+    .sort(query.sort)
+    .skip(query.skip)
+    .limit(query.limit)
+    .select(query.select)
+    .lean()
+    .exec(function (err, docs) {
+      if (err) {
+        next(err);
+      } else {
+        res.send(docs);
       }
     });
   })

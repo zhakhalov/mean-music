@@ -51,5 +51,25 @@ module.exports = {
       sort: '-rating',
       select: '_id name img rating albums artists duration listened'
     }
+  },
+  genres: {
+    preventUpdate: ['_id', 'name', 'createdBy', 'udatedBy', 'createdAt', 'updatedAt'],
+    defaultQuery: {
+      query: {},
+      skip: 0, 
+      limit: 10,
+      sort: 'name',
+      select: '_id name img rating'
+    }
+  },
+  tags: {
+    preventUpdate: ['_id', 'name', 'createdBy', 'udatedBy', 'createdAt', 'updatedAt'],
+    defaultQuery: {
+      query: {},
+      skip: 0, 
+      limit: 10,
+      sort: 'name',
+      select: '_id name'
+    }
   }
 };
