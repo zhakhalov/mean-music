@@ -75,8 +75,8 @@ Update artist instance.
 | Response formats      | *application/json*                 
 | Response data         | `{ArtistModel}`  
 | Require autorization  | *false*
-| Success codes         | 200
-| Error codes           | 404, 500
+| Success codes         | 200, 201
+| Error codes           | 400, 500
 
 ####Parameters
 | Name       | Type       | Required | Description
@@ -96,7 +96,7 @@ Removes artist. Return **_id** of removed document if succes.
 | Require autorization | **yes**
 | Response data        | `String`  
 | Success codes        | 200
-| Error codes          | 401, 500
+| Error codes          | 401, 404, 500
 
 ####Parameters
 | Name      | Type       | Required | Description
@@ -116,7 +116,7 @@ Rate artists. Rate range: 0..10
 | Require autorization | **yes**
 | Response data        | `{ rating: {Number} }`  
 | Success codes        | 200
-| Error codes          | 401, 500
+| Error codes          | 401, 400, 500
 
 ####Parameters
 | Name      | Type       | Required | Description

@@ -11,6 +11,7 @@ describe('/api', function () {
   var app;
   var API_ROUTE = 'http://localhost:1337/api/';
   var token;
+  var genres = {};
   var artists = {};
   var albums = {};
   var songs = {};
@@ -145,7 +146,7 @@ describe('/api', function () {
     
     describe('/genres POST', function() {
       
-      it('should got authorization error while creating tag "EDM"', function(done) {
+      it('should get authorization error while creating genre "EDM"', function(done) {
          superagent
         .post(API_ROUTE + 'genres')
         .send({ name: 'EDM' })
@@ -156,20 +157,78 @@ describe('/api', function () {
         });
       });
       
-      it('should create tag "EDM"', function(done) {
+      it('should get Bad Request while creating genre "EDM"', function(done) {
          superagent
         .post(API_ROUTE + 'genres')
-        .send({ name: 'EDM' })
+        .set('Authorization', 'Bearer ' + token)
+        .set('Accept', 'application/json')
+        .end(function(err, res) {
+          expect(err).not.to.be.null;
+          expect(res.status).to.equal(400);
+          done();
+        });
+      });
+      
+      it('should create genre "EDM"', function(done) {
+         superagent
+        .post(API_ROUTE + 'genres')
+        .field('name', 'EDM')
         .set('Authorization', 'Bearer ' + token)
         .set('Accept', 'application/json')
         .end(function(err, res) {
           expect(err).equal(null);
           expect(res.body.name).equal('edm');
+          genres['EDM'] = res.body;
+          done();
+        });
+      });
+      
+      it('should create genre "Glitch Hop"', function(done) {
+         superagent
+        .post(API_ROUTE + 'genres')
+        .field('name', 'Glitch Hop     ')
+        .set('Authorization', 'Bearer ' + token)
+        .set('Accept', 'application/json')
+        .end(function(err, res) {
+          expect(err).equal(null);
+          expect(res.body.name).equal('glitch hop');
+          genres['Glitch Hop'] = res.body;
           done();
         });
       });
       
     }); // /genres POST
+    
+    describe('/genres/{genreId} PUT', function() {
+      it('should get authorization error while updating genre EDM', function(done) {
+        superagent
+        .put(API_ROUTE + 'genres/' + genres['EDM']._id)
+        .end(function (err, res) {
+          expect(err).not.equal(null);
+          expect(res.status).equal(401);
+          done();
+        });
+      });
+      
+      it('should update EDM', function(done) {
+        superagent
+        .put(API_ROUTE + 'genres/' + genres['EDM']._id)
+        .attach('image', './test/assets/edm.jpg')
+        .set('Authorization', 'Bearer ' + token)
+        .set('Accept', 'application/json')
+        .end(function (err, res) {
+          expect(err).equal(null);
+          expect(res.status).equal(200);
+          expect(res.body._id).equal(genres['EDM']._id);
+          expect(res.body.name).equal('edm');
+          expect(res.body.imgPath).to.match(/^\/img\/genres\/edm.*$/);
+          
+          albums['Funkyard Single'] = res.body;
+          
+          done();
+        });
+      });
+    }); // /genres/{genreId} PUT
     
   }); // /genres
   
@@ -191,9 +250,11 @@ describe('/api', function () {
         superagent
         .post(API_ROUTE + 'artists')
         .field('name', 'Arrowhead')
-        .field('genres[]', 'edm')
-        .field('genres[]', 'glitch hop')
-        // .send({ name: 'Arrowhead', genres: [ 'edm', 'glitch hop' ] })
+        .field('genres[0][genreId]', genres['EDM']._id)
+        .field('genres[0][name]', 'EDM')
+        .field('genres[1][genreId]', genres['Glitch Hop']._id)
+        .field('genres[1][name]', 'Glitch Hop')
+        .attach('image', './test/assets/arrowhead.jpg')
         .set('Authorization', 'Bearer ' + token)
         .set('Accept', 'application/json')
         .end(function (err, res) {
@@ -201,6 +262,8 @@ describe('/api', function () {
           expect(res.status).equal(200);
           expect(res.body._id).not.equal(null);
           expect(res.body.name).equal('Arrowhead');
+          expect(res.body.img).not.null;
+          expect(res.body.imgPath).to.match(/^\/img\/artists\/arrowhead.*$/);
           expect(res.body.createdBy.name).equal('monolith');
           
           artists['Arrowhead'] = res.body;
@@ -212,7 +275,7 @@ describe('/api', function () {
       it('should create Zenta', function(done) {
         superagent
         .post(API_ROUTE + 'artists')
-        .send({ name: 'Zenta', genres: [ 'edm', 'glitch hop' ] })
+        .send({ name: 'Zenta' })
         .set('Authorization', 'Bearer ' + token)
         .set('Accept', 'application/json')
         .end(function (err, res) {
@@ -245,7 +308,7 @@ describe('/api', function () {
       it('should update Arrowhead succesfully', function(done) {
         superagent
         .put(API_ROUTE + 'artists/' + artists['Arrowhead']._id)
-        .send({ name: 'Arrowhead', img: 'img/arrowhead.jpg', tags: [ 'glitch hop' ] })
+        .send({ name: 'Arrowhead', tags: [ 'glitch hop' ] })
         .set('Authorization', 'Bearer ' + token)
         .set('Accept', 'application/json')
         .end(function (err, res) {
@@ -254,7 +317,7 @@ describe('/api', function () {
           expect(res.body._id).not.equal(null);
           expect(res.body._id).equal(artists['Arrowhead']._id);
           expect(res.body.name).equal('Arrowhead');
-          expect(res.body.img).equal('img/arrowhead.jpg');
+          expect(res.body.imgPath).to.match(new RegExp('^/img/artists/arrowhead.*$'));
           
           artists['Arrowhead'] = res.body;
           
@@ -265,7 +328,7 @@ describe('/api', function () {
       it('should update Zenta succesfully', function(done) {
         superagent
         .put(API_ROUTE + 'artists/' + artists['Zenta']._id)
-        .send({ name: 'Zenta', img: 'img/zenta.jpg', tags: [ 'edm' ] })
+        .attach('image', './test/assets/zenta.jpg')
         .set('Authorization', 'Bearer ' + token)
         .set('Accept', 'application/json')
         .end(function (err, res) {
@@ -274,7 +337,7 @@ describe('/api', function () {
           expect(res.body._id).not.equal(null);
           expect(res.body._id).equal(artists['Zenta']._id);
           expect(res.body.name).equal('Zenta');
-          expect(res.body.img).equal('img/zenta.jpg');
+          expect(res.body.imgPath).to.match(new RegExp('^/img/artists/zenta.*$'));
           
           artists['Zenta'] = res.body;
           
@@ -360,10 +423,12 @@ describe('/api', function () {
     
     describe('/albums POST', function() {
       
-      it('should got authorization error while creating Funkyard Single', function(done) {
+      it('should get authorization error while creating Funkyard Single', function(done) {
         superagent
         .post(API_ROUTE + 'albums')
-        .send({ name: 'Funkyard Single' })
+        .field('name', 'Funkyard Single')
+        .field('artists[]', artists['Arrowhead']._id)
+        .attach('image', './test/assets/arrowhead-and-zenta_-_funkyard-single.jpg')
         .end(function (err, res) {
           expect(err).not.equal(null);
           expect(res.status).equal(401);
@@ -371,10 +436,28 @@ describe('/api', function () {
         });
       });
       
+      it('should get bad request while creating Funkyard Single', function(done) {
+        superagent
+        .post(API_ROUTE + 'albums')
+        .field('name', 'Funkyard Single')
+        .attach('image', './test/assets/arrowhead-and-zenta_-_funkyard-single.jpg')
+        .set('Authorization', 'Bearer ' + token)
+        .set('Accept', 'application/json')
+        .end(function (err, res) {
+          expect(err).not.equal(null);
+          expect(res.status).equal(400);
+          
+          done();
+        });
+      });
+      
       it('should create Funkyard Single', function(done) {
         superagent
         .post(API_ROUTE + 'albums')
-        .send({ name: 'Funkyard Single' })
+        .field('name', 'Funkyard Single')
+        .field('artists[0][artistId]', artists['Arrowhead']._id)
+        .field('artists[0][name]', artists['Arrowhead'].name)
+        .attach('image', './test/assets/arrowhead-and-zenta_-_funkyard-single.jpg')
         .set('Authorization', 'Bearer ' + token)
         .set('Accept', 'application/json')
         .end(function (err, res) {
@@ -396,7 +479,7 @@ describe('/api', function () {
       it('should got authorization error while updating album Funkyard Single', function(done) {
         superagent
         .put(API_ROUTE + 'albums/' + albums['Funkyard Single']._id)
-        .send({ name: 'Funkyard Single', img: 'img/arrowhead-and-zenta_-_funkyard-single.jpg.jpg' })
+        .send({ name: 'Funkyard Single', genres: [{ name: 'Glitch Hop', genreId: genres['Glitch Hop']._id }] })
         .end(function (err, res) {
           expect(err).not.equal(null);
           expect(res.status).equal(401);
@@ -404,13 +487,18 @@ describe('/api', function () {
         });
       });
       
-      it('should update Funkyard Single succesfully', function(done) {
+      it('should update Funkyard Single', function(done) {
         superagent
         .put(API_ROUTE + 'albums/' + albums['Funkyard Single']._id)
         .send({
           name: 'Funkyard Single',
-          img: 'img/arrowhead-and-zenta_-_funkyard-single.jpg.jpg',
-          artists: [ artists['Arrowhead']._id, artists['Zenta']._id ]
+            artists: [{
+              artistId: artists['Arrowhead']._id,
+              name: artists['Arrowhead'].name
+            }, {
+              artistId: artists['Zenta']._id,
+              name: artists['Zenta'].name
+            }]
         })
         .set('Authorization', 'Bearer ' + token)
         .set('Accept', 'application/json')
@@ -419,10 +507,35 @@ describe('/api', function () {
           expect(res.status).equal(200);
           expect(res.body._id).not.equal(null);
           expect(res.body._id).equal(albums['Funkyard Single']._id);
-          expect(res.body.artists).to.contain(artists['Arrowhead']._id);
-          expect(res.body.artists).to.contain(artists['Zenta']._id);
+          expect(res.body.artists[0].artistId).to.equal(artists['Arrowhead']._id);
+          expect(res.body.artists[1].artistId).to.equal(artists['Zenta']._id);
           expect(res.body.name).equal('Funkyard Single');
-          expect(res.body.img).equal('img/arrowhead-and-zenta_-_funkyard-single.jpg.jpg');
+          expect(res.body.imgPath).to.match(new RegExp('^/img/albums/funkyard-single'));
+          
+          albums['Funkyard Single'] = res.body;
+          
+          done();
+        });
+      });
+      
+      it('should update Funkyard Single image and genres', function(done) {
+        superagent
+        .put(API_ROUTE + 'albums/' + albums['Funkyard Single']._id)
+        .attach('image', './test/assets/arrowhead-and-zenta_-_funkyard-single_1.jpg')
+        .field('genres[0][name]', 'EDM')
+        .field('genres[0][genreId]', genres['EDM']._id)
+        .set('Authorization', 'Bearer ' + token)
+        .set('Accept', 'application/json')
+        .end(function (err, res) {
+          expect(err).equal(null);
+          expect(res.status).equal(200);
+          expect(res.body._id).not.equal(null);
+          expect(res.body._id).equal(albums['Funkyard Single']._id);
+          expect(res.body.artists[0].artistId).to.equal(artists['Arrowhead']._id);
+          expect(res.body.artists[1].artistId).to.equal(artists['Zenta']._id);
+          expect(res.body.genres[0].genreId).to.equal(genres['EDM']._id);
+          expect(res.body.name).equal('Funkyard Single');
+          expect(res.body.imgPath).to.match(new RegExp('^/img/albums/funkyard-single'));
           
           albums['Funkyard Single'] = res.body;
           
@@ -432,7 +545,7 @@ describe('/api', function () {
     }); // /albums/{albumId} PUT
     
     describe('/albums/{albumId} DELETE', function() {
-      it('should got authorization error while deleting album Funkyard Single', function(done) {
+      it('should get authorization error while deleting album Funkyard Single', function(done) {
         superagent
         .del(API_ROUTE + 'albums/' + albums['Funkyard Single']._id)
         .set('Authorization', 'Bearer ' + token)
@@ -445,7 +558,7 @@ describe('/api', function () {
     
     describe('/albums/{albumId}/rate', function() {
       
-      it('should got authorization error while rating albums Funkyard Single ', function(done) {
+      it('should get authorization error while rating albums Funkyard Single ', function(done) {
         superagent
         .post(API_ROUTE + 'albums/' + albums['Funkyard Single']._id + '/rate/sadfsfg')
         .end(function (err, res) {
@@ -455,14 +568,14 @@ describe('/api', function () {
         });
       });
       
-      it('should got Not Allowed while rate albums Funkyard Single with wrong rate param', function(done) {
+      it('should get Bad Request while rate albums Funkyard Single with wrong rate param', function(done) {
         superagent
         .post(API_ROUTE + 'albums/' + albums['Funkyard Single']._id + '/rate/sadfsfg')
         .set('Authorization', 'Bearer ' + token)
         .set('Accept', 'application/json')
         .end(function (err, res) {
           expect(err).not.equal(null);
-          expect(res.status).equal(403);
+          expect(res.status).equal(400);
           done();
         });
       });
@@ -515,7 +628,10 @@ describe('/api', function () {
       it('should create Funkyard', function(done) {
         superagent
         .post(API_ROUTE + 'songs')
-        .send({ name: 'Funkyard', path: 'audio/arrowhead-and-zentra_-_funkyard.mp3' })
+        .field('name', 'Funkyard')
+        .field('albums[0][albumId]', albums['Funkyard Single']._id)
+        .field('albums[0][name]', albums['Funkyard Single'].name)
+        .attach('audio', './test/assets/Nico Vega-Gravity.mp3')
         .set('Authorization', 'Bearer ' + token)
         .set('Accept', 'application/json')
         .end(function (err, res) {
@@ -524,6 +640,7 @@ describe('/api', function () {
           expect(res.body._id).not.equal(null);
           expect(res.body.name).equal('Funkyard');
           expect(res.body.createdBy.name).equal('monolith');
+          expect(res.body.albums[0].albumId).to.equal(albums['Funkyard Single']._id);
           
           songs['Funkyard'] = res.body;
           
@@ -537,7 +654,7 @@ describe('/api', function () {
       it('should got authorization error while updating album Funkyard', function(done) {
         superagent
         .put(API_ROUTE + 'songs/' + songs['Funkyard']._id)
-        .send({ name: 'Funkyard', img: 'img/arrowhead-and-zenta_-_funkyard-single.jpg.jpg' })
+        .attach('audio', './test/assets/arrowhead-and-zentra_-_funkyard.mp3')
         .end(function (err, res) {
           expect(err).not.equal(null);
           expect(res.status).equal(401);
@@ -548,12 +665,7 @@ describe('/api', function () {
       it('should update Funkyard succesfully', function(done) {
         superagent
         .put(API_ROUTE + 'songs/' + songs['Funkyard']._id)
-        .send({
-          name: 'Funkyard',
-          img: 'img/arrowhead-and-zenta_-_funkyard-single.jpg.jpg',
-          artists: [ artists['Arrowhead']._id, artists['Zenta']._id ],
-          albums: [albums['Funkyard Single']._id]
-        })
+        .attach('audio', './test/assets/arrowhead-and-zentra_-_funkyard.mp3')
         .set('Authorization', 'Bearer ' + token)
         .set('Accept', 'application/json')
         .end(function (err, res) {
@@ -561,11 +673,8 @@ describe('/api', function () {
           expect(res.status).equal(200);
           expect(res.body._id).not.equal(null);
           expect(res.body._id).equal(songs['Funkyard']._id);
-          expect(res.body.artists).to.contain(artists['Arrowhead']._id);
-          expect(res.body.artists).to.contain(artists['Zenta']._id);
-          expect(res.body.albums).to.contain(albums['Funkyard Single']._id);
+          expect(res.body.albums[0].albumId).to.equal(albums['Funkyard Single']._id);
           expect(res.body.name).equal('Funkyard');
-          expect(res.body.img).equal('img/arrowhead-and-zenta_-_funkyard-single.jpg.jpg');
           
           songs['Funkyard'] = res.body;
           

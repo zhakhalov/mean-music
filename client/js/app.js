@@ -1,7 +1,8 @@
-(function (ng, _) {
+(function (ng) {
   ng.module('app',[ 'ngMessages',
                     'ui.bootstrap',
                     'ui.bootstrap-slider',
-                    'ui.bootstrap.popover'
+                    'ui.bootstrap.popover',
+                    'flow'
   ])
-})(window.angular, window._);
+})(window.angular);

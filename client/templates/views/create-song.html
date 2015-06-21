@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <link data-require="bootstrap-css@*" data-semver="3.3.1" rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css" />
+    <script data-require="jquery@2.1.3" data-semver="2.1.3" src="http://code.jquery.com/jquery-2.1.3.min.js"></script>
+    <script data-require="bootstrap@*" data-semver="3.3.2" src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script>
+    <script data-require="angular.js@1.4.0-rc.0" data-semver="1.4.0-rc.0" src="https://code.angularjs.org/1.4.0-rc.0/angular.js"></script>
+    <script data-require="lodash.js@*" data-semver="3.8.0" src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/3.8.0/lodash.js"></script>
+    <link rel="stylesheet" href="style.css" />
+    <script src="https://rawgit.com/flowjs/ng-flow/master/dist/ng-flow-standalone.js"></script>
+    <script src="script.js"></script>
+  </head>
+
+  <body ng-app="app">
+    <div class="container" ng-controller="SongCreateCtrl" flow-init flow-drop flow-drag-enter="style={border:'4px solid #77ff77'}" flow-drag-leave="style={}" ng-style="style"
+    flow-file-added="onFileAdded( $file, $event, $flow )">
+      <form>
+        <fieldset>
+          <legend>Create Song</legend>
+          <div class="form-group">
+            <input type="text" class="form-control" placeholder="Title" ng-model="song.name" />
+          </div>
+          <div class="form-group">
+            <input type="text" class="form-control" placeholder="Artist" ng-model="artist" />
+            <button class="btn btn-default" ng-click="addArtist(artist)">Add</button>
+          </div>
+          <div class="form-group">
+            <div ng-repeat="artist in song.artists" class="row">
+              <div class="col-xs-2">
+                {{artist}}
+              </div>
+              <div class="col-xs-2">
+                <button class="btn btn-default" ng-click="rmArtist(artist)">Remove</button>
+              </div>
+            </div>
+          </div>
+          <div class="form-group">
+            <span class="btn btn-default"
+                  flow-btn
+                  flow-attrs="{accept: 'audio/*'}">Select Audio File</span>
+                  {{song.audio.name}} - {{duration}}
+          </div>
+          <div class="form-group">
+            <span class="btn btn-default"
+                  flow-btn
+                  flow-attrs="{accept: 'image/*'}">Select Image</span>
+                  {{song.image.name}}
+          </div>
+        </fieldset>
+        <img src="" flow-img="image" winth="128" height="128">
+        <button class="btn btn-default" ng-click="save()">Save</button>
+      </form>
+    </div>
+  </body>
+
+</html>

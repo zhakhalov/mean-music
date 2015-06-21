@@ -1,6 +1,8 @@
 // ----- node_modules
 var dbox = require('dbox');
 var _ = require('lodash');
+var fs = require('fs');
+var q = require('q');
 
 // ----- config
 
@@ -73,16 +75,53 @@ function url (path, fn) {
 /**
  * Save file to file storage.
  * @param {String} path Path to file.
- * @param {String} data Data to save in file.
+ * @param {String|Buffer} data Data of filename to save at file storage.
  * @param {Function} fn callback funtion.
+ * @param {Object} opts [optional] options.
+ * @param {Boolean} opts.shareLink return share link as 3rd argument.
  */
-function save (path, data, fn) {
-  client.put(path, data, function (status, res) {
-    if (status && status >= 400 && status <= 599) {
-      fn(_.assign(new Error(res), { status: status }));
+function upload (path, data, fn, opts) {
+  q.promise(function (resolve, reject) {
+    if (typeof data === 'string') {
+      fs.exists(data, function (exists) {
+        if (exists) {
+          fs.readFile(data, function (err, data) {
+            if (err) {
+              reject(err);
+            } else {
+              resolve(data, opts && opts.removeUploaded);
+            }
+          });
+        } else {
+          resolve(data);
+        }
+      });
     } else {
-      fn(null, res);
+      resolve(data);
     }
+  })
+  .then(function (data, remove) {
+    client.put(path, data, function (status, res) {
+      if (status && status >= 400 && status <= 599) {
+        fn(_.assign(new Error(res), { status: status }));
+      } else if (opts && opts.shareLink) {
+        url(res.path, function (err, url) {
+          if (err) {
+            fn(err);
+          } else {
+            url = url.replace("dl=0", "raw=1"); // link to file instead of link to Dropbox.
+            fn(null, res, url);
+          }
+        });
+      } else {
+        fn(null, res);
+      }
+      if (typeof data === 'string' && remove) {
+        fs.unlink(data);
+      }
+    });
+  }, function (err) {
+    fn(err);
   });
 }
 
@@ -112,6 +151,6 @@ module.exports = {
   get: get,
   media: media,
   url: url,
-  save: save,
+  upload: upload,
   remove: remove
 };

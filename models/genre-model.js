@@ -2,10 +2,11 @@ var mongoose = require('mongoose');
 
 var VoteSchema = require('./vote-schema.js');
 
-var GenreSchema = mongoose.Schema({
+var schema = mongoose.Schema({
   name: { type: String, required: true, unique: true, trim: true, lowercase: true },  //  Genre name.
   desc: { type: String },                                                             //  Description of genre.
   img: { type: String },                                                              //  Url to image.
+  imgPath: { type: String },                                                          //  Path to image file at Dropbox.
   raters: [VoteSchema],                                                               //  Raters.
   rating: { type: Number, min: 0, max: 10, default: 0 },                              //  Rating.
   createdBy: {                                                                        //  User which created Genre.
@@ -21,6 +22,20 @@ var GenreSchema = mongoose.Schema({
 });
 
 // -----------------------------------------------------------------------
+//                                  SCHEMA.STATICS
+// -----------------------------------------------------------------------
+
+/** 
+ * Find model by kabab-cased url. Example "depeche-mode" -> /depeche\s+mode/i
+ * @param {String} url
+ * @param {Function} fn
+ */
+schema.statics.findOneByURL= function (url, fn) {
+  this.while( 'name', new RegExp(url.replace(/\-/g, '\\s+'), 'i')).exec(fn);
+};
+
+
+// -----------------------------------------------------------------------
 //                                  EXPORTS
 // -----------------------------------------------------------------------
-module.exports = mongoose.model('Genre', GenreSchema);
+module.exports = mongoose.model('Genre', schema);

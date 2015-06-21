@@ -2,19 +2,20 @@
 
 ##User
 
-| Field       | Type            | Rules     | Default     | Prevent update  | Description
-|-------------|-----------------|-----------|-------------|-----------------|-----------
-| _id         | `ObjectId`      |           |             | **yes**         | Mongo _id. 
-| name        | `String`        |           |             |                 | Displayed name for users registered via sign up.
-| email       | `String`        |           |             | **yes**         | User's email for users registered via sign up.
-| password    | `String`        |           |             | **yes**         | Hashsed password for users registered via sign up. 
-| avatar      | `String`        |           |             |                 | User's avatar url.
-| about       | `String`        |           |             |                 | Short information about user.
-| roles       | `Array`         |           | `['user']`  | **yes**         | Autorization roles
-| googleId    | `String`        |           |             |                 | Facebook Oauth profile.id
-| facebookId  | `String`        |           |             |                 | User's avatar url.
-| createdAt   | `Date`          |           | `Date.now`  |                 | Creation date.   
-| updatedAt   | `Date`          |           | `Date.now`  |                 | Last update date.
+| Field             | Type            | Rules             | Reference | Default     | Prevent update  | Description
+|-------------------|-----------------|-------------------|-----------|-------------|-----------------|-----------
+| _id               | `ObjectId`      |                   |           |             | **yes**         | Mongo _id. 
+| name              | `String`        |                   |           |             |                 | Displayed name for users registered via sign up.
+| email             | `String`        |                   |           |             | **yes**         | User's email for users registered via sign up.
+| password          | `String`        |                   |           |             | **yes**         | Hashsed password for users registered via sign up. 
+| avatar            | `String`        |                   |           |             |                 | User's avatar url.
+| avatarPath        | `String`        |                   |           |             |                 | Path to image file at Dropbox.
+| about             | `String`        |                   |           |             |                 | Short information about user.
+| roles             | `Array`         |                   |           | `['user']`  | **yes**         | Autorization roles
+| googleId          | `String`        |                   |           |             |                 | Facebook Oauth profile.id
+| facebookId        | `String`        |                   |           |             |                 | User's avatar url.
+| createdAt         | `Date`          |                   |           | `Date.now`  |                 | Creation date.   
+| updatedAt         | `Date`          |                   |           | `Date.now`  |                 | Last update date.
 
 ***
 
@@ -26,6 +27,7 @@
 | name              | `String`        | required, unique  |           |             |                 | Name of genre. 
 | desc              | `String`        |                   |           |             |                 | Description of genre. 
 | img               | `String`        |                   |           |             |                 | Url to image.
+| imgPath           | `String`        |                   |           |             |                 | Path to image file at Dropbox.
 | raters            | `[VoteSchema]`  |                   |           |             |                 | Raters.
 | rating            | `Number`        | min=0, max=10     |           | 0           | **yes**         | Rating.  
 | createdBy         | `Object`        | required          |           |             | **yes**         | User which created Genre.
@@ -48,7 +50,8 @@
 | desc              | `String`        |                   |           |             |                 | About artist.
 | genres            | `[String]`      |                   |           |             |                 | Genres.
 | tags              | `[String]`      |                   |           |             |                 | Tags.
-| img               | `String`        |                   |           |             |                 | Raters. 
+| img               | `String`        |                   |           |             |                 | URL to image.
+| imgPath           | `String`        |                   |           |             |                 | Path to image file at Dropbox.
 | raters            | `[VoteSchema]`  |                   |           |             |                 | Rating. 
 | rating            | `Number`        | min=0, max=10     |           | 0           | **yes**         | Creation date.   
 | createdBy         | `Object`        | required          |           |             | **yes**         | User which created Artist.
@@ -72,7 +75,8 @@
 | artists           | `[ObjectId]`    |                   | *Artist*  |             |                 | Artist.
 | genres            | `[String]`      |                   |           |             |                 | Genres.
 | tags              | `[String]`      |                   |           |             |                 | Tags.
-| img               | `String`        |                   |           |             |                 | Raters. 
+| img               | `String`        |                   |           |             |                 | URL to image.
+| imgPath           | `String`        |                   |           |             |                 | Path to image file at Dropbox.
 | raters            | `[VoteSchema]`  |                   |           |             |                 | Rating. 
 | rating            | `Number`        | min=0, max=10     |           | 0           | **yes**         | Creation date.   
 | createdBy         | `Object`        | required          |           |             | **yes**         | User which created Album.
@@ -94,7 +98,8 @@
 | path              | `String`        | required, unique  |           |             |                 | Path to audio file at Dropbox.
 | name              | `String`        |                   |           |             |                 | URL of an image on Album's page.
 | duration          | `Number`        | min=0             |           | 0           |                 | Song duration.
-| img               | `String`        |                   |           |             |                 | Raters. 
+| img               | `String`        |                   |           |             |                 | URL to image.
+| imgPath           | `String`        |                   |           |             |                 | Path to image file at Dropbox.
 | desc              | `String`        |                   |           |             |                 | About Song.
 | artists           | `[ObjectId]`    |                   | *Artist*  |             |                 | Artists.
 | albums            | `[ObjectId]`    |                   | *Album*   |             |                 | Albums.

@@ -1,5 +1,6 @@
 // ----- node_modules
 var _ = require('lodash');
+var q = require('q');
 
 // ----- config
 var cfg = global.__require('./config/db-cfg.js').songs;
@@ -8,6 +9,7 @@ var cfg = global.__require('./config/db-cfg.js').songs;
 var security = global.__require('./modules/security');
 var storage = global.__require('./modules/storage');
 var rating = global.__require('./modules/rating');
+var timestamp = global.__require('./modules/timestamp');
 
 // ----- models
 var SongModel = global.__require('./models/song-model.js');
@@ -78,16 +80,47 @@ module.exports = function (router) {
     });
   })
   .post('/songs', security.ensureAuthenticated, function (req, res, next) {
-    var model = new SongModel(_.assign(req.body, {
-      createdBy: { name: req.user.name, userId: req.user.id },
-      updatedBy: { name: req.user.name, userId: req.user.id }
-    }));
-    model.save(function (err, doc) {
-      if (err) {
-        next(err);
-      } else {
-        res.send(doc.toObject());
-      }
+    // validate model
+    q.promise(function(resolve, reject) {
+      var model = new SongModel(_.assign(req.body, {
+        createdBy: { name: req.user.name, userId: req.user.id },
+        updatedBy: { name: req.user.name, userId: req.user.id },
+        path: 'audio/'
+      }));
+      model.validate(function (err) {
+        ((err == null) ? resolve : reject)((err == null) ? model : _.assign(err, { status: 400 }));
+      });
+    })
+    // check file type and upload audio file
+    .then(function(model) {
+      return q.promise(function (resolve, reject) {
+        if (req.files && req.files.audio && /^audio\/.*$/i.test(req.files.audio.mimetype)) {
+          var path = 'audio/' + _.kebabCase(req.body.name) + '-' + timestamp() + '.' + req.files.audio.extension;
+          storage.upload(path, req.files.audio.path, function (err, meta) {
+            if (err) {
+              reject(err);
+            } else {
+              resolve(_.assign(model, { path: meta.path }));
+            }
+          });
+        } else {
+          reject(_.assign(new Error('files.audio must be specified and audio.mimetype must be [audio/*]'), { status: 400 }));
+        }
+      });
+    })
+    // save model to DB
+    .then(function (model) {
+      return q.promise(function(resolve, reject) {
+        model.save(function (err, doc) {
+          ((err == null) ? resolve : reject)((err == null) ? doc : err);
+        });
+      });
+    })
+    // respond
+    .then(function (doc) {
+      res.send(doc.toObject());
+    }, function (err) {
+      next(err);
     });
   })
   .get('/songs/:songId', function (req, res, next) {
@@ -102,30 +135,76 @@ module.exports = function (router) {
     });
   })
   .put('/songs/:songId', security.ensureAuthenticated, function (req, res, next) {
-    req.body.updatedAt = new Date();
-    req.body.updatedBy = { name: req.user.name, userId: req.user.id };
-    SongModel.findById(req.params.songId, function(err, song) {
-      if (err) {
+    SongModel.findById(req.params.songId, function(err, model) {
+      // validate model
+      q.promise(function(resolve, reject) {
+        if (err) {
+          reject(err);
+        } else {
+          model = model || new SongModel(_.assign(req.body, {
+            createdBy: { name: req.user.name, userId: req.user.id },
+            updatedBy: { name: req.user.name, userId: req.user.id }
+          }));
+          if (model.isNew) {
+            model.validate(function (err) {
+              ((err == null) ? resolve : reject)((err == null) ? model : err);
+            });
+          } else {
+            model = _.assign(model, _.omit(req.body, cfg.preventUpdate), {
+              updatedBy: { name: req.user.name, userId: req.user.id },
+              updatedAt: new Date()
+            });
+            resolve(model);
+          }
+        }
+      })
+      // remove existing audio file
+      .then(function(model) {
+        return q.promise(function(resolve, reject) {
+          if (model.path && req.files && req.files.audio) {
+            storage.remove(model.path, function(err) {
+              ((err == null) ? resolve : reject)((err == null) ? model : err);
+            });
+          } else {
+            resolve(model);
+          }
+        });
+      })
+      // check file type and upload audio file
+      .then(function(model) {
+        return q.promise(function(resolve, reject) {
+          if (req.files && req.files.audio) {
+            if(/^audio\/.*$/i.test(req.files.audio.mimetype)) {
+              var path = 'audio/' + _.kebabCase(model.name) + '-' + timestamp() + '.' + req.files.audio.extension;
+              storage.upload(path, req.files.audio.path, function (err, meta) {
+                if (err) {
+                  reject(err);
+                } else {
+                  resolve(_.assign(model, { path: meta.path }));
+                }
+              });
+            } else {
+              reject(_.assign(new Error('files.audio.mimetype must be audio/*'), { status: 400 }));
+            }
+          } else {
+            resolve(model);
+          }
+        });
+      })
+      // save model to DB
+      .then(function(model) {
+        return q.promise(function(resolve, reject) {
+          model.save(function (err, doc) {
+            ((err == null) ? resolve : reject)((err == null) ? doc : err);
+          });
+        });
+      })
+      // respond
+      .then(function (model) {
+        res.status(model.isNew ? 201 : 200).send(model.toObject());
+      }, function (err) {
         next(err);
-      } else if (!song) {
-        song = new SongModel(req.body);
-        song.save(function (err) {
-          if (err) {
-            next(err);
-          } else {
-            res.status(201).send(song.toObject());
-          }
-        });
-      } else {
-        song = _.assign(song, _.omit(req.body, cfg.preventUpdate));
-        song.save(function (err) {
-          if (err) {
-            next(err);
-          } else {
-            res.send(song.toObject());
-          }
-        });
-      }
+      });
     });
   })
   .delete('/songs/:songId', security.ensureAuthenticated, security.ensureInRole('admin', 'owner'), function (req, res, next) {

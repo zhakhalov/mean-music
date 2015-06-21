@@ -23,7 +23,7 @@ module.exports = {
     preventUpdate: ['_id', 'email', 'password', 'roles'],
   },
   artists: {
-    preventUpdate: ['_id', 'rating', 'raters', 'createdBy', 'udatedBy', 'createdAt', 'updatedAt'],
+    preventUpdate: ['_id', 'rating', 'raters', 'createdBy', 'udatedBy', 'createdAt', 'updatedAt', 'img', 'imgPath'],
     defaultQuery: {
       query: {},
       skip: 0, 

@@ -1,3 +1,7 @@
+/**
+ * Perform require from project root.
+ * @param {String} path Path to module. 
+ */
 global.__require = function (path) {
   return require(require('path').join(__dirname, path));
 };
@@ -7,6 +11,7 @@ global.__require = function (path) {
 var http = require('http');
 var express = require('express');
 var path = require('path');
+var fs = require('fs');
 var mongoose = require('mongoose');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
@@ -52,9 +57,9 @@ var app = express();
 var viewRouter = express.Router();
 var apiRouter = express.Router();
 
-app.use(multer({ dest: './uploads/'}));
+app.use(multer({ dest: path.join(__dirname, '/tmp')}));
 app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.urlencoded({ extended: false, uploadDir: path.join(__dirname, '/tmp') }));
 app.use(cookieParser());
 
 app.set('view engine', 'ejs');
@@ -67,14 +72,16 @@ app.use(favicon(path.join(__dirname, 'assets/mean-music-logo.ico')));
 
 var server = http.createServer(app);
 
-apiRouter.get('/media', function (req, res, next) {
-  storage.media(req.query.filename, function (err, url) {
-    if (err) {
-      next(err);
-    } else {
-      res.send(url);
+// remove all uploaded files
+apiRouter.all('*', function (req, res, next) {
+  res.on('finish', function () {
+    if (req.files) {
+      for (var prop in req.files) {
+        fs.unlink(req.files[prop].path);
+      }
     }
-  })
+  });
+  next();
 });
 
 // -----  controllers

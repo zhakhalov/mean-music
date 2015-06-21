@@ -37,7 +37,7 @@ Create new Artist DataBase.
 | Response data         | `{AlbumModel}`  
 | Require autorization  | **yes**
 | Success codes         | 200
-| Error codes           | 500
+| Error codes           | 400, 401, 500
 
 ***
 
@@ -75,8 +75,8 @@ Update Album instance.
 | Response formats      | *application/json*                 
 | Response data         | `{AlbumModel}`  
 | Require autorization  | *no*
-| Success codes         | 200
-| Error codes           | 404, 500
+| Success codes         | 200, 201
+| Error codes           | 400, 401, 500
 
 ####Parameters
 | Name       | Type       | Required | Description
@@ -96,7 +96,7 @@ Removes Album. Return **_id** of removed document if succes.
 | Require autorization | **yes**
 | Response data        | `String`  
 | Success codes        | 200
-| Error codes          | 401, 500
+| Error codes          | 401, 404, 500
 
 ####Parameters
 | Name      | Type       | Required | Description
