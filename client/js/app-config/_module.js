@@ -1,5 +1,5 @@
 (function (ng) {
-  ng.module('app')
+  ng.module('app.config', [])
   // ============================ CONSTANTS ============================
   .constant('REST_API_ROUTE', '/api/')
   .constant('TOKEN_STORAGE', '__token__')

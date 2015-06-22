@@ -1,5 +1,5 @@
 (function (ng) {
-  ng.module('app')
+  ng.module('form-data')
   .factory('FormData', ['$window', 
     function FormData ($window) {
       
@@ -12,8 +12,8 @@
       function append(fd, path, obj) {
         if (ng.isObject(obj)) {
           if (ng.isArray(obj)) {
-            ng.forEach(obj, function (entry) {
-              append(fd, path + '[]', entry);
+            ng.forEach(obj, function (entry, index) {
+              append(fd, path + '[' + index + ']', entry);
             });
           } else if (obj instanceof $window.File){
             fd.append(path, obj);

@@ -1,5 +1,5 @@
 (function (ng) {
-  ng.module('app')
+  ng.module('app.security')
   .factory('Auth', ['REST_API_ROUTE', '$q', '$http',
     function (REST_API_ROUTE, $q, $http) {
       return function () {

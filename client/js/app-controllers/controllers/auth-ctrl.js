@@ -1,5 +1,5 @@
 (function (ng) {
-  ng.module('app')
+  ng.module('app.controllers')
     // --------------------------- AuthCtrl ---------------------------
   .controller('AuthCtrl', ['$scope', '$rootScope', 'AuthSvc', '$modal',
     function ($scope, $rootScope, AuthSvc, $modal) {

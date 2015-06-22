@@ -1,5 +1,5 @@
 (function (ng) {
-  ng.module('app')
+  ng.module('app.security')
   .service('AuthSvc', [ 'REST_API_ROUTE', 'TOKEN_STORAGE', 'AUTH_SCHEMA', 'Auth', '$q', '$window', '$http',
     function (REST_API_ROUTE, TOKEN_STORAGE, AUTH_SCHEMA, Auth, $q, $window, $http) {
       var _auth = new Auth();
