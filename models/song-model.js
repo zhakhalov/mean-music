@@ -1,4 +1,5 @@
 var mongoose = require('mongoose');
+var transliteration = require('transliteration');
 
 var VoteSchema = require('./vote-schema.js');
 var AlbumSchema = require('./album-schema.js');
@@ -6,6 +7,7 @@ var AlbumSchema = require('./album-schema.js');
 var schema = mongoose.Schema({
   path: { type: String, required: true },                                                           //  Path to audio file at Dropbox.
   name: { type: String, required: true, trim: true },                                               //  Song name.
+  url: { type: String, required: true, trim: true, lowercase: true },                               //  Url to song.
   duration: { type: Number, min: 0, default: 0 },                                                   //  Song duration.
   desc: { type: String },                                                                           //  About this song.
   albums: { type: [AlbumSchema], required: true, minLength: 1 },   //  Albums.
@@ -29,15 +31,17 @@ var schema = mongoose.Schema({
 //                                  SCHEMA.STATICS
 // -----------------------------------------------------------------------
 
-/** 
- * Find model by kabab-cased url. Example "depeche-mode" -> /depeche\s+mode/i
- * @param {String} url
- * @param {Function} fn
- */
-schema.statics.findOneByURL= function (url, fn) {
-  this.while( 'name', new RegExp(url.replace(/\-/g, '\\s+'), 'i')).exec(fn);
+schema.findByURL = function (url, fn) {
+  this.findOne({ url: url}).exec(fn);
 };
 
+// -----------------------------------------------------------------------
+//                                  HOOKS
+// -----------------------------------------------------------------------
+
+schema.pre('save', function (next) {
+  this.url = transliteration.slugify(this.name);
+});
 
 // -----------------------------------------------------------------------
 //                                  EXPORTS

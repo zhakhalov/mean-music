@@ -42,3 +42,33 @@
   vertical-align: middle !important;
   background-color: transparent;
 }
+
+.artist-img {
+  width: 256px;
+  height: 256px;
+  background-image: url(http://serviceart.ru/image/data/img/Microphone%201.png);
+  background-position: center center; 
+  background-repeat: no-repeat; 
+}
+
+input.search-query {
+    padding-left:26px;
+}
+
+form.form-search {
+    position: relative;
+}
+
+form.form-search:before {
+    content:'';
+    display: block;
+    width: 14px;
+    height: 14px;
+    background-image: url(http://getbootstrap.com/2.3.2/assets/img/glyphicons-halflings.png);
+    background-position: -48px 0;
+    position: absolute;
+    top:8px;
+    left:8px;
+    opacity: .5;
+    z-index: 1000;
+}

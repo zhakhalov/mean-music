@@ -1,0 +1,53 @@
+<div  flow-init 
+      flow-drop flow-drag-enter="flowStyle={border:'4px solid #77ff77'}" 
+      flow-drag-leave="flowStyle={}" 
+      ng-style="flowStyle"
+      flow-file-added="onFileAdded( $file, $event, $flow )">
+    <section>
+      <h2 class="page-header">Create new artist</h2>
+      <tabset>
+        <!--=============================== EDIT TAB ===============================-->
+        <tab>
+          <tab-heading>
+            <i class="fa fa-edit"></i>
+            Edit
+          </tab-heading>
+          <form name="form" ng-submit="save()">
+            <fieldset>
+              <div class="form-group">
+                <label>First name:</label>
+                <input  class="form-control" 
+                        type="text" 
+                        name="name"
+                        ng-model="artist.name" 
+                        required=""/>
+                <ng-messages ng-show="form.name.$dirty" for="form.name.$error">
+                  <ng-message class="label label-danger" when="required">Name cannot be empty</ng-message>
+                </ng-messages>
+              </div>
+              <div class="form-group">
+                <span id="song-image"
+                      class="btn btn-default"
+                      flow-btn
+                      flow-attrs="{ accept: 'image/*' }">Select Image</span>
+                      {{artist.image.name}}
+              </div>
+              <img flow-img="image" class="artist-img img-circle" />
+              <button class="btn btn-primary" 
+                      role="submit" 
+                      ng-disabed="pendingSave || pendingVerify || form.$error">
+                Save
+              </button>
+            </fieldset>
+          </form>
+        </tab>
+        <!--=============================== PREVIEW TAB ===============================-->
+        <tab>
+          <tab-heading>
+            <i class="fa fa-external-link"></i>
+            Preview
+          </tab-heading>
+        </tab>
+      </tabset>
+    </section>
+</div>

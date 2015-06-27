@@ -1,10 +1,12 @@
 var mongoose = require('mongoose');
+var transliteration = require('transliteration');
 
 var VoteSchema = require('./vote-schema.js');
 var GenreSchema = require('./genre-schema.js');
 
 var schema = mongoose.Schema({
   name: { type: String, required: true, unique: true },                           //  Name of the artist.
+  url: { type: String, required: true, trim: true, lowercase: true },             //  Url to artist.
   img: { type: String },                                                          //  URL of an image on artist's page.
   imgPath: { type: String },                                                      //  Path to image file at Dropbox.
   desc: { type: String },                                                         //  About artist.
@@ -28,15 +30,17 @@ var schema = mongoose.Schema({
 //                                  SCHEMA.STATICS
 // -----------------------------------------------------------------------
 
-/** 
- * Find model by kabab-cased url. Example "depeche-mode" -> /depeche\s+mode/i
- * @param {String} url
- * @param {Function} fn
- */
-schema.statics.findOneByURL= function (url, fn) {
-  this.while( 'name', new RegExp(url.replace(/\-/g, '\\s+'), 'i')).exec(fn);
+schema.findByURL = function (url, fn) {
+  this.findOne({ url: url}).exec(fn);
 };
 
+// -----------------------------------------------------------------------
+//                                  HOOKS
+// -----------------------------------------------------------------------
+
+schema.pre('save', function (next) {
+  this.url = transliteration.slugify(this.name);
+});
 
 // -----------------------------------------------------------------------
 //                                  EXPORTS

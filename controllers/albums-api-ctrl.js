@@ -13,6 +13,7 @@ var timestamp = global.__require('./modules/timestamp');
 
 // ----- models
 var AlbumModel = global.__require('./models/album-model.js');
+var SongModel = global.__require('./models/song-model.js');
 
 module.exports = function (router) {
   router
@@ -82,7 +83,7 @@ module.exports = function (router) {
   .post('/albums', security.ensureAuthenticated, function (req, res, next) {
     // validate model
     q.promise(function(resolve, reject) {
-      var model = new AlbumModel(_.assign(req.body, {
+      var model = new AlbumModel(_.assign(req.body.album, {
         createdBy: { name: req.user.name, userId: req.user.id },
         updatedBy: { name: req.user.name, userId: req.user.id }
       }));

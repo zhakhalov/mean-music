@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" ng-app="app">
   <head>
     <title>Mean Music</title>
     <!--========== bower_components STYLES ==========-->
@@ -10,76 +10,68 @@
     <script type="text/javascript" src="bower_components/seiyria-bootstrap-slider/js/bootstrap-slider.js"></script>
     <script type="text/javascript" src="bower_components/lodash/lodash.js"></script>
     <script type="text/javascript" src="bower_components/angular/angular.js"></script>
-    <script type="text/javascript" src="bower_components/angular-resource/angular-resource.js"></script>
+    <script type="text/javascript" src="bower_components/angular-route/angular-route.js"></script>
     <script type="text/javascript" src="bower_components/angular-messages/angular-messages.js"></script>
     <script type="text/javascript" src="bower_components/angular-bootstrap/ui-bootstrap.js"></script>
     <script type="text/javascript" src="bower_components/angular-bootstrap/ui-bootstrap-tpls.js"></script>
     <script type="text/javascript" src="bower_components/angular-bootstrap-slider/slider.js"></script>
+    <script type="text/javascript" src="bower_components/ng-flow/dist/ng-flow-standalone.js"></script>
     <!--========== STYLES ==========-->
     <link rel="stylesheet" href="css/cyborg.css" type="text/css" />
     <link rel="stylesheet" href="css/slider.css" type="text/css" />
     <link rel="stylesheet" href="css/styles.css" type="text/css" />
     <!--========== SCRIPTS ==========-->
-    <script type="text/javascript" src="js/app.js"></script>
-    <script type="text/javascript" src="js/constants.js"></script>
     
-    <script type="text/javascript" src="js/filters/time-filter.js"></script>
-
-    <script type="text/javascript" src="js/factories/lodash.js"></script>
-    <script type="text/javascript" src="js/factories/auth.js"></script>
-
-    <script type="text/javascript" src="js/services/users-svc.js"></script>
-    <script type="text/javascript" src="js/services/auth-svc.js"></script>
-
-    <script type="text/javascript" src="js/directives/unique-login-dir.js"></script>
-
-    <script type="text/javascript" src="js/controllers/auth-ctrl.js"></script>
-    <script type="text/javascript" src="js/controllers/player-ctrl.js"></script>
+    <script type="text/javascript" src="app/app.module.js"></script>
+    <script type="text/javascript" src="app/app.routes.js"></script>
+    
+    <!-- ----- Shared -->
+    <script type="text/javascript" src="app/shared/factories.js"></script>
+    <script type="text/javascript" src="app/shared/services.js"></script>
+    <script type="text/javascript" src="app/shared/filters.js"></script>
+    
+    <!-- ----- Search -->
+    <script type="text/javascript" src="app/components/search/search-controllers.js"></script>
+    
+    <!-- ----- User -->
+    <script type="text/javascript" src="app/components/user/user-services.js"></script>
+    <script type="text/javascript" src="app/components/user/user-directives.js"></script>
+    <script type="text/javascript" src="app/components/user/user-controllers.js"></script>
+    
+    <!-- ----- Player -->
+    <script type="text/javascript" src="app/components/player/player-services.js"></script>
+    <script type="text/javascript" src="app/components/player/player-controllers.js"></script>
+    
+    <!-- ----- Artist -->
+    <script type="text/javascript" src="app/components/artist/artist-services.js"></script>
+    <script type="text/javascript" src="app/components/artist/artist-directives.js"></script>
+    <script type="text/javascript" src="app/components/artist/artist-controllers.js"></script>
+    
+    <!-- ----- Album -->
+    <script type="text/javascript" src="app/components/album/album-services.js"></script>
+    <script type="text/javascript" src="app/components/album/album-controllers.js"></script>
 
   </head>
-  <body ng-app="app">
-    <main>
-      <nav class="navbar navbar-inverse">
+  <body>
+    <nav class="navbar navbar-inverse">
         <div class="container">
           <div class="navbar-header">
-            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
-              <span class="sr-only">Toggle navigation</span>
-              <span class="icon-bar"></span>
-              <span class="icon-bar"></span>
-              <span class="icon-bar"></span>
-            </button>
             <a class="navbar-brand" href="/">
-              <img src="img/mean-music-logo_24x24.png" alt="">
-            </a>
-            <a class="navbar-brand" href="/">
-              MEAN Music
+              <img src="img/mean-music-logo_24x24.png">
             </a>
           </div>
-          <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-            <ul class="nav navbar-nav">
-              <li class="active"><a href="#">Link <span class="sr-only">(current)</span></a></li>
-              <li><a href="#">Link</a></li>
-              <li class="dropdown">
-                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Dropdown <span class="caret"></span></a>
-                <ul class="dropdown-menu" role="menu">
-                  <li><a href="#">Action</a></li>
-                  <li><a href="#">Another action</a></li>
-                  <li><a href="#">Something else here</a></li>
-                  <li class="divider"></li>
-                  <li><a href="#">Separated link</a></li>
-                  <li class="divider"></li>
-                  <li><a href="#">One more separated link</a></li>
-                </ul>
-              </li>
-            </ul>
-            <form class="navbar-form navbar-left" role="search">
-              <div class="form-group">
-                <input type="text" class="form-control" placeholder="Search">
-              </div>
-              <button type="submit" class="btn btn-default">Submit</button>
-            </form>
+          <div class="collapse navbar-collapse">
+            <div style="padding:20px;" ng-controller="NavSearchCtrl">
+              <form class="form-search form-inline" ng-submit="submit()">
+                <div class="input-append">
+                  <input type="text" class="search-query" placeholder="Search..." ng-model="query"/>
+                  <button type="submit" class="btn btn-primary">Search</button>
+                </div>
+              </form>
+            </div>
             <ul class="nav navbar-nav navbar-right" ng-controller="AuthCtrl">
-              <li><a href="" ng-hide="isAuthenticated" ng-click="showModal()"><i class="fa fa-sign-in"></i> Log In</a></li>
+              <li>
+                  <a href="" ng-hide="isAuthenticated" ng-click="showModal()"><i class="fa fa-sign-in"></i> Log In</a></li>
               <li ng-show="isAuthenticated">
                 <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"><i class="fa fa-user"></i> User<span class="caret"></span></a>
                 <ul class="dropdown-menu" role="menu">
@@ -90,6 +82,7 @@
           </div>
         </div>
       </nav>
+    <main ng-view>
     </main>
     <footer class="navbar navbar-inverse navbar-fixed-bottom" 
             ng-controller="PlayerCtrl">
@@ -121,9 +114,9 @@
               <slider ng-model="volume"
                       min="0"
                       max="100" 
-                      scale="logarithmic"
                       slider-tooltip="hide" 
-                      on-slide="slideVolume()" >
+                      on-start-slide="startSeeking()" 
+                      on-stop-slide="stopSeeking()">
               </slider>
             </td>
           </tr>
