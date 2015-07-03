@@ -30,7 +30,7 @@ function signIn (credentials, fn) {
       fn(null, {
         user: user.toObject(), 
         token: token({
-          id: user.id || user._id,
+          id: user._id,
           name: user.name,
           email: user.email,
           roles: user.roles
@@ -84,48 +84,6 @@ function token (payload) {
   return jwt.sign(payload, securityCfg.secret, { expiresInMinutes: securityCfg.expiresInMinutes });
 }
 
-/**
- * Verify user in roles.
- * @param {Object} user User.
- * @param {String|[String]} roles Allowed roles.
- * @return {Function} Express middleware.
- */
-function isInRoles(user, roles) {
-  roles = _.isArray(roles) ? roles : Array.prototype.slice.call(arguments, 1);
-  return _.intersection(user.roles, roles).length === roles.length;
-}
-
-/**
- * User role-based autorization filter middleware.
- * @param {String|[String]} roles  Allowed roles.
- * @return {Function} Express middleware.
- */
-function ensureInRole (roles) {
-  return function (req, res, next) {
-    if (isInRoles(req.user, roles)) {
-      next();
-    } else {
-      var err = new Error('Role autorization failed');
-      err.status = 403;
-      next (err);
-    }
-  };
-}
-
-/**
- * Check equality req.param.id to req.user.id autorization filter middleware.
- * @params roles {String|[String]} Allowed roles.
- */
-function TokenIdMiddleware (req, res, next) {
-  if (req.params.id === req.user.id) {
-    next();
-  } else {
-    var err = new Error('Trying access to another\'s id');
-    err.status = 403;
-    next (err);
-  }
-}
-
 // -----------------------------------------------------------------------
 //                                  EXPORTS
 // -----------------------------------------------------------------------
@@ -133,7 +91,5 @@ module.exports = {
   signIn: signIn,
   signUp: signUp,
   token: token,
-  ensureAuthenticated: expressJwt({ secret: securityCfg.secret }),
-  TokenIdMiddleware: TokenIdMiddleware,
-  ensureInRole: ensureInRole,
+  ensureAuthenticated: expressJwt({ secret: securityCfg.secret })
 };

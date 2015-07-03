@@ -19,6 +19,10 @@
     }])
   .service('AlbumsSvc', [ '_', 'ResourceSvc', 'Album',
     function AlbumsSvc ( _, ResourceSvc, Album) {
-      return new ResourceSvc(Album);
+      var self = new ResourceSvc(Album);
+      
+      ng.extend(self, Album);
+      
+      return self;
     }])
 })(window.angular);

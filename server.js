@@ -41,7 +41,6 @@ var AlbumsApiCtrl = require('./controllers/albums-api-ctrl.js');
 var ArtistsApiCtrl = require('./controllers/artists-api-ctrl.js');
 var SongsApiCtrl = require('./controllers/songs-api-ctrl.js');
 var GenresApiCtrl = require('./controllers/genres-api-ctrl.js');
-var TagsApiCtrl = require('./controllers/tags-api-ctrl.js');
 var ErrApiCtrl = require('./controllers/err-api-ctrl.js');
 
 var IndexCtrl = require('./controllers/index-ctrl.js');
@@ -92,7 +91,6 @@ AlbumsApiCtrl(apiRouter);
 ArtistsApiCtrl(apiRouter);
 SongsApiCtrl(apiRouter);
 GenresApiCtrl(apiRouter);
-TagsApiCtrl(apiRouter);
 ErrApiCtrl(apiRouter);
 
 IndexCtrl(viewRouter);

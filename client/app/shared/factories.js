@@ -374,7 +374,7 @@
          * @function
          * Clear cache after CLEAR_CACHE_DEBOUNCE since last request
          */
-        var clearCache = _.debounce(function () {
+        self.$clearCache = _.debounce(function () {
           self.$instances = {};
         }, CLEAR_CACHE_DEBOUNCE);
         
@@ -388,7 +388,7 @@
           if (!self.$instances[id].$resolved) {
             self.$instances[id].$resolved.$get();
           }
-          clearCache();
+          self.$clearCache();
           return self.$instances[id];
         };
         
@@ -401,10 +401,10 @@
         self.getSeveral = function (ids) {
           return $q(function (resolve, reject) {
             // get not cached artists
-            var difference = _(self.$instances).keys().difference(ids).value();
+            var difference = _.difference(ids, _.keys(self.$instances));
             // if there is not cached artists
             if (difference.length > 0) {
-              Resource.query({ _id: { $in: difference }})
+              Resource.query({ query: { _id: { $in: difference }}})
               .then(function (artists) {
                 _.forEach(artists, function (entry) {
                   self.$instances[entry._id] = entry;
@@ -416,7 +416,7 @@
             } else {
               resolve(_.pick(self.$instances, ids));
             }
-            clearCache();
+            self.$clearCache();
           });
         };
         

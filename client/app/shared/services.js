@@ -4,7 +4,14 @@
     function lodash () {
       var self = _.noConflict();
       // custom lodash mixins goes here ...
-      
+      self.mixin({
+        toObject: function (arr, key) {
+          var obj = {};
+          for (var i = 0; i < arr.length; ++i) {
+            obj[arr[i][key]] = arr[i];
+          }
+        }
+      });
       return self;
     }])
   .service('AuthSvc', [ 'REST_API_ROUTE', 'Auth', '$q', '$window', '$http',

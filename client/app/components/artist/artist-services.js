@@ -1,7 +1,7 @@
 (function (ng) {
   ng.module('app')
-  .factory('Artist', ['$http', '$q', 'REST_API_ROUTE', 'MediaResource', 'AuthSvc',
-    function Artist ($http, $q, REST_API_ROUTE, MediaResource, AuthSvc) {
+  .factory('Artist', ['$http', '$q', 'REST_API_ROUTE', 'MediaResource', 'AuthSvc', '_',
+    function Artist ($http, $q, REST_API_ROUTE, MediaResource, AuthSvc, _) {
       var url = REST_API_ROUTE + 'artists';
       var _resource = MediaResource(url,  { authorization: AuthSvc.header });  
       var $resource = function (instance) {
@@ -14,6 +14,21 @@
       
       ng.extend($resource, _resource);
       // add static functions here...
+      
+      /**
+       * Get top rated artists
+       */
+      $resource.getTopRated = function (skip, limit) {
+        return $q(function (resolve, reject) {
+          $resource.query({ sort: '-rating', skip: skip || 0, limit: limit || 10})
+          .then(function (artists) {
+            resolve(artists);
+          }, function (err) {
+            reject(err);
+          });
+          $resource.$clearCache();
+        });
+      };
       
       /**
        * @function
@@ -39,12 +54,11 @@
       
       return $resource;
     }])
-  .service('ArtistsSvc', [ '_', 'ResourceSvc', 'Artist',
-    function ArtistsSvc ( _, ResourceSvc, Artist) {
-      var self =  ResourceSvc(Artist);
-      
-      // add custom service functins here...
-      self.exists = Artist.exists;
+  .service('ArtistsSvc', [ '_', '$q', '$http', 'ResourceSvc', 'Artist',
+    function ArtistsSvc ( _, $q, $http, ResourceSvc, Artist) {
+      var self = new ResourceSvc(Artist);
+      ng.extend(self, Artist);
+      // add custom service functions here...
       
       return self;
     }])

@@ -6,4 +6,7 @@ var VoteSchema = mongoose.Schema({
   votedAt: { type: Date, default: Date.now }                                      // Vote date.       
 });
 
+// -----------------------------------------------------------------------
+//                                  EXPORTS
+// -----------------------------------------------------------------------
 module.exports = VoteSchema;

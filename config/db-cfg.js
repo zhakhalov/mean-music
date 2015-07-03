@@ -29,7 +29,8 @@ module.exports = {
       skip: 0, 
       limit: 10,
       sort: 'name',
-      select: '_id name img rating genres'
+      select: '_id name img rating genres',
+      populate: []
     }
   },
   albums: {
@@ -39,7 +40,11 @@ module.exports = {
       skip: 0, 
       limit: 10,
       sort: '-release',
-      select: '_id name img rating artists genres release'
+      select: '_id name img rating songs genres release',
+      populate: [
+        { path: 'songs', select: 'name duration listened rating' },
+        { path: 'genres', select: ''}
+      ]
     }
   },
   songs: {
@@ -60,16 +65,6 @@ module.exports = {
       limit: 10,
       sort: 'name',
       select: '_id name img rating'
-    }
-  },
-  tags: {
-    preventUpdate: ['_id', 'name', 'createdBy', 'udatedBy', 'createdAt', 'updatedAt'],
-    defaultQuery: {
-      query: {},
-      skip: 0, 
-      limit: 10,
-      sort: 'name',
-      select: '_id name'
     }
   }
 };

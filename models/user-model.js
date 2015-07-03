@@ -7,10 +7,6 @@ var UserSchema = new mongoose.Schema({
   avatar: { type:String },                      //  User's avatar filename.
   about: { type:String },                       //  Short information about user.
   roles: { type:Array, default: ['user'] },     //  Autorization roles
-  googleId: { type:String },                    //  Google OAuth profile.id
-  facebookId: { type:String },                  //  Facebook Oauth profile.id
-  createdAt: { type:Date, default: Date.now },  //  Registration date.
-  updatedAt: { type:Date, default: Date.now }   //  Last update date.
 });
 
 // -----------------------------------------------------------------------

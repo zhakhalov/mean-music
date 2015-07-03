@@ -86,7 +86,7 @@ module.exports = function (router) {
       }
     });
   })
-  .delete('/users/:userId', security.ensureAuthenticated, security.ensureInRole('admin'), function (req, res, next) {
+  .delete('/users/:userId', security.ensureAuthenticated, function (req, res, next) {
     UserModel.delete({ id: req.params.userId }, function (err) {
       if (err) {
          next(err);
@@ -95,7 +95,7 @@ module.exports = function (router) {
        }
     });
   })
-  .post('/users/:userId/roles', security.ensureAuthenticated, security.ensureInRole('admin'), function (req, res, next) {
+  .post('/users/:userId/roles', security.ensureAuthenticated, function (req, res, next) {
     UserModel.findById(req.params.userId, function (err, doc) {
       if (err) {
         next(err);
@@ -113,7 +113,7 @@ module.exports = function (router) {
       }
     });
   })
-  .delete('/users/:userId/roles', security.ensureAuthenticated, security.ensureInRole('admin'), function (req, res, next) {
+  .delete('/users/:userId/roles', security.ensureAuthenticated, function (req, res, next) {
      UserModel.findById(req.params.userId, function (err, doc) {
       if (err) {
         next(err);
